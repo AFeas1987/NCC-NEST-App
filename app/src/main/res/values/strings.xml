@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">NCC Nest App</string>
-    <string name="str_main_button">Click me</string>
+    <string name="str_main_button">Launch ODK Collect</string>
 </resources>

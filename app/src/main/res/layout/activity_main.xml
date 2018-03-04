@@ -7,11 +7,15 @@
     tools:context="com.example.nccnestapp.MainActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_main_launch_collect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/str_main_button"
         android:onClick="mainButtonClick"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="230dp" />
+        android:text="@string/str_main_button"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.364" />
 </android.support.constraint.ConstraintLayout>
