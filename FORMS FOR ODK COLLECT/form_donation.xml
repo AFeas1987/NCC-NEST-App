@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Donation</h:title>
+    <model>
+      <instance>
+        <form_donation id="pantry_donation">
+          <start_time/>
+          <todays_date/>
+          <donor_name/>
+          <repeat_donation jr:template="">
+            <group_donation>
+              <donation_type_select>type_food</donation_type_select>
+              <group_food>
+                <repeat_scan_barcode jr:template="">
+                  <group_scan_barcode>
+                    <scanned_barcode/>
+                    <scanned_barcode_quantity>1</scanned_barcode_quantity>
+                  </group_scan_barcode>
+                </repeat_scan_barcode>
+                <repeat_manual_barcode jr:template="">
+                  <temp_manual_barcode/>
+                </repeat_manual_barcode>
+                <repeat_manual_food jr:template="">
+                  <temp_manual_food/>
+                </repeat_manual_food>
+              </group_food>
+              <repeat_clothing jr:template="">
+                <group_clothing>
+                  <text_clothing_donation/>
+                  <text_clothing_type/>
+                </group_clothing>
+              </repeat_clothing>
+              <monetary_donation_value/>
+              <other_donation/>
+            </group_donation>
+          </repeat_donation>
+          <meta>
+            <instanceID/>
+            <instanceName/>
+          </meta>
+        </form_donation>
+      </instance>
+      <bind jr:preload="timestamp" jr:preloadParams="start" nodeset="/form_donation/start_time" type="dateTime"/>
+      <bind jr:preload="date" jr:preloadParams="today" nodeset="/form_donation/todays_date" type="date"/>
+      <bind nodeset="/form_donation/donor_name" type="string"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/donation_type_select" required="true()" type="select1"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/group_food" relevant="selected( /form_donation/repeat_donation/group_donation/donation_type_select , 'type_food')"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/group_food/repeat_scan_barcode/group_scan_barcode/scanned_barcode" required="true()" type="barcode"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/group_food/repeat_scan_barcode/group_scan_barcode/scanned_barcode_quantity" type="int"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/group_food/repeat_manual_barcode/temp_manual_barcode" required="true()" type="int"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/group_food/repeat_manual_food/temp_manual_food" required="true()" type="string"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/repeat_clothing" relevant="selected( /form_donation/repeat_donation/group_donation/donation_type_select , 'type_cloth')"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/repeat_clothing/group_clothing/text_clothing_donation" required="true()" type="string"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/repeat_clothing/group_clothing/text_clothing_type" required="true()" type="string"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/monetary_donation_value" relevant="selected( /form_donation/repeat_donation/group_donation/donation_type_select , 'type_money')" required="true()" type="int"/>
+      <bind nodeset="/form_donation/repeat_donation/group_donation/other_donation" relevant="selected( /form_donation/repeat_donation/group_donation/donation_type_select , 'type_other')" required="true()" type="string"/>
+      <bind calculate="concat('uuid:', uuid())" nodeset="/form_donation/meta/instanceID" readonly="true()" type="string"/>
+      <bind calculate="concat( /form_donation/start_time , ' ',  /form_donation/donor_name )" nodeset="/form_donation/meta/instanceName" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/form_donation/donor_name">
+      <label>Donor name</label>
+      <hint>*Not required</hint>
+    </input>
+    <group ref="/form_donation/repeat_donation">
+      <label>Donation</label>
+      <repeat nodeset="/form_donation/repeat_donation">
+        <group ref="/form_donation/repeat_donation/group_donation">
+          <label>Make donation</label>
+          <select1 ref="/form_donation/repeat_donation/group_donation/donation_type_select">
+            <label>Donation type</label>
+            <hint>Select a donation type</hint>
+            <item>
+              <label>Food</label>
+              <value>type_food</value>
+            </item>
+            <item>
+              <label>Clothing</label>
+              <value>type_cloth</value>
+            </item>
+            <item>
+              <label>Monetary</label>
+              <value>type_money</value>
+            </item>
+            <item>
+              <label>Other</label>
+              <value>type_other</value>
+            </item>
+          </select1>
+          <group ref="/form_donation/repeat_donation/group_donation/group_food">
+            <label>Make a food donation</label>
+            <group ref="/form_donation/repeat_donation/group_donation/group_food/repeat_scan_barcode">
+              <label>Barcode scan</label>
+              <repeat nodeset="/form_donation/repeat_donation/group_donation/group_food/repeat_scan_barcode">
+                <group appearance="field_list" ref="/form_donation/repeat_donation/group_donation/group_food/repeat_scan_barcode/group_scan_barcode">
+                  <label>Scan food item</label>
+                  <input ref="/form_donation/repeat_donation/group_donation/group_food/repeat_scan_barcode/group_scan_barcode/scanned_barcode">
+                    <label>Barcode scan</label>
+                    <hint>Scan a barcode</hint>
+                  </input>
+                  <input ref="/form_donation/repeat_donation/group_donation/group_food/repeat_scan_barcode/group_scan_barcode/scanned_barcode_quantity">
+                    <label>Quantity</label>
+                  </input>
+                </group>
+              </repeat>
+            </group>
+            <group ref="/form_donation/repeat_donation/group_donation/group_food/repeat_manual_barcode">
+              <label>UPC# manual entry</label>
+              <repeat nodeset="/form_donation/repeat_donation/group_donation/group_food/repeat_manual_barcode">
+                <input ref="/form_donation/repeat_donation/group_donation/group_food/repeat_manual_barcode/temp_manual_barcode">
+                  <label>Enter UPC# manually</label>
+                  <hint>Enter UPC#</hint>
+                </input>
+              </repeat>
+            </group>
+            <group ref="/form_donation/repeat_donation/group_donation/group_food/repeat_manual_food">
+              <label>Other food item</label>
+              <repeat nodeset="/form_donation/repeat_donation/group_donation/group_food/repeat_manual_food">
+                <input ref="/form_donation/repeat_donation/group_donation/group_food/repeat_manual_food/temp_manual_food">
+                  <label>Donate other food</label>
+                </input>
+              </repeat>
+            </group>
+          </group>
+          <group ref="/form_donation/repeat_donation/group_donation/repeat_clothing">
+            <label>Clothing</label>
+            <repeat nodeset="/form_donation/repeat_donation/group_donation/repeat_clothing">
+              <group ref="/form_donation/repeat_donation/group_donation/repeat_clothing/group_clothing">
+                <label>Donate clothing</label>
+                <input ref="/form_donation/repeat_donation/group_donation/repeat_clothing/group_clothing/text_clothing_donation">
+                  <label>Clothing donation</label>
+                </input>
+                <input ref="/form_donation/repeat_donation/group_donation/repeat_clothing/group_clothing/text_clothing_type">
+                  <label>Clothing type</label>
+                </input>
+              </group>
+            </repeat>
+          </group>
+          <input ref="/form_donation/repeat_donation/group_donation/monetary_donation_value">
+            <label>Amount</label>
+          </input>
+          <input ref="/form_donation/repeat_donation/group_donation/other_donation">
+            <label>Description</label>
+          </input>
+        </group>
+      </repeat>
+    </group>
+  </h:body>
+</h:html>
