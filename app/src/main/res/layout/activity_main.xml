@@ -4,7 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.nccnestapp.MainActivity">
+    tools:context="com.example.nccnestapp.activities.MainActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textSize="30sp"
+        android:text="@string/no_data_available" />
 
     <Button
         android:id="@+id/btn_main_launch_collect"
@@ -13,6 +28,7 @@
         android:onClick="mainButtonClick"
         android:text="@string/str_main_button"
         android:textAppearance="@android:style/TextAppearance.Large"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
