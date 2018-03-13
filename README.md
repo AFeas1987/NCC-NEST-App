@@ -1,4 +1,5 @@
 # NCC-NEST-App
 App research for the Nassau Community College food pantry
 
-*Use this form with ODK Collect https://www.dropbox.com/s/rnkdry15umop875/form_donation.xml?dl=0*
+***Use these NEST forms with ODK Collect (copy to root\odk\forms):*** 
+https://www.dropbox.com/sh/v0gkvd1sng7sz11/AABoBXH0jrUWgdYdD5RTRGMMa?dl=0   (In progress)
