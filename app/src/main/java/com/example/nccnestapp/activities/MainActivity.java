@@ -23,6 +23,10 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,9 +46,14 @@ public class MainActivity extends AbstractActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("DEBUG", "################    Started onCreate    ################");
         super.onCreate(savedInstanceState);
+        Log.d("DEBUG", "################    Finished super onCreate    ################");
         setContentView(R.layout.activity_main);
-
+        Log.d("DEBUG", "################    Finished layout load    ################");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Log.d("DEBUG", "################    Finished toolbar load    ################");
         if (!isCollectAppInstalled()) {
             finish();
             Toast.makeText(this, getString(R.string.collect_app_not_installed), Toast.LENGTH_LONG)
@@ -91,5 +100,27 @@ public class MainActivity extends AbstractActivity {
         }
 
         return listElements;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_admin:
+                Intent i = new Intent(getApplicationContext(), GoogleDriveActivity.class);
+                startActivity(i);
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }

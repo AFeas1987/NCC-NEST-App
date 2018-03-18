@@ -20,4 +20,6 @@ limitations under the License.
     <string name="ok">OK</string>
     <string name="no_data_available">No data available</string>
     <string name="collect_app_not_installed">The Collect app is not installed!</string>
+    <string name="str_drive_launch">Get sheets data</string>
+    <string name="str_admin_menu">Admin</string>
 </resources>
