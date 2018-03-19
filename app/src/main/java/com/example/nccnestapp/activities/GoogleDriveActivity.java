@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.nccnestapp.utilities.PantryGuest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -323,7 +324,7 @@ public class GoogleDriveActivity extends Activity
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new com.google.api.services.sheets.v4.Sheets.Builder(
                     transport, jsonFactory, credential)
-                    .setApplicationName("Google Sheets API Android Quickstart")
+                    .setApplicationName("NCC NEST Registrations")
                     .build();
         }
 
@@ -349,17 +350,39 @@ public class GoogleDriveActivity extends Activity
          * @throws IOException
          */
         private List<String> getDataFromApi() throws IOException {
-            String spreadsheetId = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms";
-            String range = "Class Data!A2:E";
+            String spreadsheetId = "1u2t-wl4h70he3nKCfsrycyNgW_uSHhbT2BgNNDQrBGA";
+            String range = "Guest";
             List<String> results = new ArrayList<String>();
             ValueRange response = this.mService.spreadsheets().values()
                     .get(spreadsheetId, range)
                     .execute();
             List<List<Object>> values = response.getValues();
             if (values != null) {
-                results.add("Name, Major");
+                //results.add("Last, First, Email, etc...");
+                values.remove(0);
                 for (List row : values) {
-                    results.add(row.get(0) + ", " + row.get(4));
+                    //results.add(row.get(0) + ", " + row.get(1)+ ", " + row.get(2)+ ", " + row.get(3));
+                    PantryGuest guest = new PantryGuest()
+                            .setEmail(row.get(1))       .setPin(row.get(2))
+                            .setFirstName(row.get(3))   .setLastName(row.get(4))
+                            .setPhone(row.get(5))       .setStreet(row.get(6))
+                            .setCity(row.get(7))        .setState(row.get(8))
+                            .setZip(row.get(9))         .setSchoolID(row.get(10))
+                            .setGender(row.get(11))     .setAge(row.get(12))
+                            .setSize(row.get(13))       .setIncome(row.get(14))
+                            .setFoodStamps(row.get(15)) .setFoodPrograms(row.get(16))
+                            .setStatusEmploy(row.get(17)).setStatusHealth(row.get(18))
+                            .setStatusHousing(row.get(19)).setStatusChild(row.get(20))
+                            .setChildUnder1(row.get(21)).setChild1to5(row.get(22))
+                            .setChild6to12(row.get(23)) .setChild13to18(row.get(24))
+                            .setDietNeeds(row.get(25))  .setFoundFrom(row.get(26) + " " + row.get(27))
+                            .setComments(row.get(28))   .setHelpedBy(row.get(29));
+
+                    results.add(String.format("%s: %s, %-11s %d", guest.getEmail(), guest.getLast(),
+                            guest.getFirst(), guest.getIncome()));
+//                    results.add(row.get(1) + " " + row.get(3) + " " + row.get(4));
+//                    results.add(guest.toString());
+
                 }
             }
             return results;
