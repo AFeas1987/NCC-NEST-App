@@ -1,8 +1,19 @@
-package com.example.nccnestapp.utilities;
-
-/**
- * Created by AF on 3/17/2018.
+/*
+ * Copyright 2018 AFeas1987
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package com.example.nccnestapp.utilities;
 
 public class PantryGuest {
     private String first, last, email, phone, nccID;
@@ -15,7 +26,6 @@ public class PantryGuest {
     public PantryGuest(){
         household = new Household();
     }
-
 
     /** Setters **/
     public PantryGuest setFirstName(Object first) {this.first = (String)first; return this;}
@@ -85,15 +95,14 @@ public class PantryGuest {
 
     @Override
     public String toString(){
-        return this.email + ":\t" + this.first + " " + this.last;
+        return String.format("%20s  %13s, %-12s", String.format("[%s]", email), last, first);
     }
-
 
 
     /**
      *  Inner class for household info
      */
-    private class Household{
+    private class Household {
         private int size, income, childUnder1, child1to5, child6to12, child13to18;
         private boolean foodStamps, foodPrograms;
     }

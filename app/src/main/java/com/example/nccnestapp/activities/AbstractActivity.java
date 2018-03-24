@@ -25,7 +25,7 @@ import com.example.nccnestapp.R;
 import static com.example.nccnestapp.utilities.Constants.COLLECT_PACKAGE_NAME;
 
 
-public class AbstractActivity extends AppCompatActivity {
+public abstract class AbstractActivity extends AppCompatActivity {
 
     public void startActivityIfAvailable(Intent i) {
         if (!isCollectAppInstalled()) {

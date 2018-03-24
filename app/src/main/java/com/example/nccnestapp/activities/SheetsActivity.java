@@ -1,8 +1,22 @@
+/*
+ * Copyright 2018 AFeas1987
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.nccnestapp.activities;
 
 import android.Manifest;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,14 +27,13 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.nccnestapp.R;
+import com.example.nccnestapp.utilities.SheetsTaskListener;
 import com.example.nccnestapp.utilities.PantryGuest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -32,7 +45,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
@@ -43,75 +55,38 @@ import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class GoogleDriveActivity extends Activity
-        implements EasyPermissions.PermissionCallbacks {
+import static com.example.nccnestapp.utilities.Constants.PREF_ACCOUNT_NAME;
+import static com.example.nccnestapp.utilities.Constants.REQUEST_ACCOUNT_PICKER;
+import static com.example.nccnestapp.utilities.Constants.REQUEST_AUTHORIZATION;
+import static com.example.nccnestapp.utilities.Constants.REQUEST_GOOGLE_PLAY_SERVICES;
+import static com.example.nccnestapp.utilities.Constants.REQUEST_PERMISSION_GET_ACCOUNTS;
+import static com.example.nccnestapp.utilities.Constants.SCOPES;
+
+public class SheetsActivity extends AppCompatActivity implements
+        EasyPermissions.PermissionCallbacks , SheetsTaskListener {
+
     GoogleAccountCredential mCredential;
-    private TextView mOutputText;
-    private Button mCallApiButton;
-    ProgressDialog mProgress;
+    static ProgressDialog mProgress;
+    static List<PantryGuest> mResults;
+    //private RecyclerView mRecView;
 
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
-    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
-
-    private static final String BUTTON_TEXT = "Call Google Sheets API";
-    private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
 
     /**
-     * Create the main activity.
-     * @param savedInstanceState previously saved instance data.
+     *
+     *
+     * @param savedInstanceState
      */
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LinearLayout activityLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        activityLayout.setLayoutParams(lp);
-        activityLayout.setOrientation(LinearLayout.VERTICAL);
-        activityLayout.setPadding(16, 16, 16, 16);
-
-        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        mCallApiButton = new Button(this);
-        mCallApiButton.setText(BUTTON_TEXT);
-        mCallApiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallApiButton.setEnabled(false);
-                mOutputText.setText("");
-                getResultsFromApi();
-                mCallApiButton.setEnabled(true);
-            }
-        });
-        activityLayout.addView(mCallApiButton);
-
-        mOutputText = new TextView(this);
-        mOutputText.setLayoutParams(tlp);
-        mOutputText.setPadding(16, 16, 16, 16);
-        mOutputText.setVerticalScrollBarEnabled(true);
-        mOutputText.setMovementMethod(new ScrollingMovementMethod());
-        mOutputText.setText(
-                "Click the \'" + BUTTON_TEXT +"\' button to test the API.");
-        activityLayout.addView(mOutputText);
-
+        setContentView(R.layout.activity_sheets);
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("Calling Google Sheets API ...");
-
-        setContentView(activityLayout);
-
-        // Initialize credentials and service object.
+        mResults = new ArrayList<>();
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+        getResultsFromApi(this);
     }
-
-
 
     /**
      * Attempt to call the API, after verifying that all the preconditions are
@@ -120,17 +95,56 @@ public class GoogleDriveActivity extends Activity
      * of the preconditions are not satisfied, the app will prompt the user as
      * appropriate.
      */
-    private void getResultsFromApi() {
+    protected void getResultsFromApi(SheetsTaskListener listener) {
         if (! isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
             chooseAccount();
         } else if (! isDeviceOnline()) {
-            mOutputText.setText("No network connection available.");
+            Toast.makeText(getApplicationContext(), R.string.str_no_network, Toast.LENGTH_LONG).show();
+            finish();
         } else {
-            new MakeRequestTask(mCredential).execute();
+            new MakeRequestTask(mCredential, listener).execute();
         }
     }
+
+    @Override
+    public String getSheetId() {return "1u2t-wl4h70he3nKCfsrycyNgW_uSHhbT2BgNNDQrBGA";}
+
+    @Override
+    public String getSheetRange() {return "Guest";}
+
+    @Override
+    public void onTaskCompleted() {
+        ((TextView)findViewById(R.id.admin_list)).setText(TextUtils.join("\n", mResults));
+//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.admin_list);
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setAdapter(new ListAdapter(mResults, null));
+    }
+
+    @Override
+    public String processData(List row) {
+        PantryGuest guest = new PantryGuest()
+                .setEmail(row.get(1)).setPin(row.get(2))
+                .setLastName(row.get(3)).setFirstName(row.get(4))
+                .setPhone(row.get(5)).setStreet(row.get(6))
+                .setCity(row.get(7)).setState(row.get(8))
+                .setZip(row.get(9)).setSchoolID(row.get(10))
+                .setGender(row.get(11)).setAge(row.get(12))
+                .setSize(row.get(13)).setIncome(row.get(14))
+                .setFoodStamps(row.get(15)).setFoodPrograms(row.get(16))
+                .setStatusEmploy(row.get(17)).setStatusHealth(row.get(18))
+                .setStatusHousing(row.get(19)).setStatusChild(row.get(20))
+                .setChildUnder1(row.get(21)).setChild1to5(row.get(22))
+                .setChild6to12(row.get(23)).setChild13to18(row.get(24))
+                .setDietNeeds(row.get(25)).setFoundFrom(row.get(26) + " " + row.get(27))
+                .setComments(row.get(28)).setHelpedBy(row.get(29));
+        mResults.add(guest);
+        return String.format("%s: %s, %-11s %d", guest.getEmail(), guest.getLast(),
+                guest.getFirst(), guest.getIncome());
+    }
+
 
     /**
      * Attempts to set the account used with the API credentials. If an account
@@ -150,7 +164,7 @@ public class GoogleDriveActivity extends Activity
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
-                getResultsFromApi();
+                getResultsFromApi(this);
             } else {
                 // Start a dialog from which the user can choose an account
                 startActivityForResult(
@@ -159,13 +173,11 @@ public class GoogleDriveActivity extends Activity
             }
         } else {
             // Request the GET_ACCOUNTS permission via a user dialog
-            EasyPermissions.requestPermissions(
-                    this,
-                    "This app needs to access your Google account (via Contacts).",
-                    REQUEST_PERMISSION_GET_ACCOUNTS,
-                    Manifest.permission.GET_ACCOUNTS);
+            EasyPermissions.requestPermissions(this, getString(R.string.str_needs_account),
+                    REQUEST_PERMISSION_GET_ACCOUNTS, Manifest.permission.GET_ACCOUNTS);
         }
     }
+
 
     /**
      * Called when an activity launched here (specifically, AccountPicker
@@ -184,11 +196,10 @@ public class GoogleDriveActivity extends Activity
         switch(requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
-                    mOutputText.setText(
-                            "This app requires Google Play Services. Please install " +
-                                    "Google Play Services on your device and relaunch this app.");
+                    Toast.makeText(getApplicationContext(), R.string.str_gplay_svcs_install, Toast.LENGTH_LONG).show();
+                    finish();
                 } else {
-                    getResultsFromApi();
+                    getResultsFromApi(this);
                 }
                 break;
             case REQUEST_ACCOUNT_PICKER:
@@ -203,17 +214,18 @@ public class GoogleDriveActivity extends Activity
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
                         mCredential.setSelectedAccountName(accountName);
-                        getResultsFromApi();
+                        getResultsFromApi(this);
                     }
                 }
                 break;
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
-                    getResultsFromApi();
+                    getResultsFromApi(this);
                 }
                 break;
         }
     }
+
 
     /**
      * Respond to requests for permissions at runtime for API 23 and above.
@@ -232,6 +244,7 @@ public class GoogleDriveActivity extends Activity
                 requestCode, permissions, grantResults, this);
     }
 
+
     /**
      * Callback for when a permission is granted using the EasyPermissions
      * library.
@@ -243,6 +256,7 @@ public class GoogleDriveActivity extends Activity
     public void onPermissionsGranted(int requestCode, List<String> list) {
         // Do nothing.
     }
+
 
     /**
      * Callback for when a permission is denied using the EasyPermissions
@@ -256,6 +270,7 @@ public class GoogleDriveActivity extends Activity
         // Do nothing.
     }
 
+
     /**
      * Checks whether the device currently has a network connection.
      * @return true if the device has a network connection, false otherwise.
@@ -263,9 +278,10 @@ public class GoogleDriveActivity extends Activity
     private boolean isDeviceOnline() {
         ConnectivityManager connMgr =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        NetworkInfo networkInfo = connMgr != null ? connMgr.getActiveNetworkInfo() : null;
         return (networkInfo != null && networkInfo.isConnected());
     }
+
 
     /**
      * Check that Google Play services APK is installed and up to date.
@@ -279,6 +295,7 @@ public class GoogleDriveActivity extends Activity
                 apiAvailability.isGooglePlayServicesAvailable(this);
         return connectionStatusCode == ConnectionResult.SUCCESS;
     }
+
 
     /**
      * Attempt to resolve a missing, out-of-date, invalid or disabled Google
@@ -305,28 +322,40 @@ public class GoogleDriveActivity extends Activity
             final int connectionStatusCode) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         Dialog dialog = apiAvailability.getErrorDialog(
-                GoogleDriveActivity.this,
+                SheetsActivity.this,
                 connectionStatusCode,
                 REQUEST_GOOGLE_PLAY_SERVICES);
         dialog.show();
     }
 
+
     /**
      * An asynchronous task that handles the Google Sheets API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    private class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
+    protected class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
+
         private com.google.api.services.sheets.v4.Sheets mService = null;
+        private SheetsTaskListener listener;
         private Exception mLastError = null;
 
-        MakeRequestTask(GoogleAccountCredential credential) {
+
+        /**
+         * Initiates the request task.
+         *
+         * @param credential
+         * @param listener
+         */
+        MakeRequestTask(GoogleAccountCredential credential, SheetsTaskListener listener) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            this.listener = listener;
             mService = new com.google.api.services.sheets.v4.Sheets.Builder(
                     transport, jsonFactory, credential)
                     .setApplicationName("NCC NEST Registrations")
                     .build();
         }
+
 
         /**
          * Background task to call Google Sheets API.
@@ -343,69 +372,42 @@ public class GoogleDriveActivity extends Activity
             }
         }
 
+
         /**
          * Fetch a list of names and majors of students in a sample spreadsheet:
          * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
          * @return List of names and majors
-         * @throws IOException
+         * @throws IOException on ValueRange instantiation failure
          */
         private List<String> getDataFromApi() throws IOException {
-            String spreadsheetId = "1u2t-wl4h70he3nKCfsrycyNgW_uSHhbT2BgNNDQrBGA";
-            String range = "Guest";
-            List<String> results = new ArrayList<String>();
+            String spreadsheetId = listener.getSheetId();
+            String range = listener.getSheetRange();
+            List<String> results = new ArrayList<>();
             ValueRange response = this.mService.spreadsheets().values()
                     .get(spreadsheetId, range)
                     .execute();
             List<List<Object>> values = response.getValues();
             if (values != null) {
-                //results.add("Last, First, Email, etc...");
                 values.remove(0);
-                for (List row : values) {
-                    //results.add(row.get(0) + ", " + row.get(1)+ ", " + row.get(2)+ ", " + row.get(3));
-                    PantryGuest guest = new PantryGuest()
-                            .setEmail(row.get(1))       .setPin(row.get(2))
-                            .setFirstName(row.get(3))   .setLastName(row.get(4))
-                            .setPhone(row.get(5))       .setStreet(row.get(6))
-                            .setCity(row.get(7))        .setState(row.get(8))
-                            .setZip(row.get(9))         .setSchoolID(row.get(10))
-                            .setGender(row.get(11))     .setAge(row.get(12))
-                            .setSize(row.get(13))       .setIncome(row.get(14))
-                            .setFoodStamps(row.get(15)) .setFoodPrograms(row.get(16))
-                            .setStatusEmploy(row.get(17)).setStatusHealth(row.get(18))
-                            .setStatusHousing(row.get(19)).setStatusChild(row.get(20))
-                            .setChildUnder1(row.get(21)).setChild1to5(row.get(22))
-                            .setChild6to12(row.get(23)) .setChild13to18(row.get(24))
-                            .setDietNeeds(row.get(25))  .setFoundFrom(row.get(26) + " " + row.get(27))
-                            .setComments(row.get(28))   .setHelpedBy(row.get(29));
-
-                    results.add(String.format("%s: %s, %-11s %d", guest.getEmail(), guest.getLast(),
-                            guest.getFirst(), guest.getIncome()));
-//                    results.add(row.get(1) + " " + row.get(3) + " " + row.get(4));
-//                    results.add(guest.toString());
-
-                }
+                for (List row : values)
+                    results.add(listener.processData(row));
             }
             return results;
         }
 
 
-
         @Override
         protected void onPreExecute() {
-            mOutputText.setText("");
             mProgress.show();
         }
+
 
         @Override
         protected void onPostExecute(List<String> output) {
             mProgress.hide();
-            if (output == null || output.size() == 0) {
-                mOutputText.setText("No results returned.");
-            } else {
-                output.add(0, "Data retrieved using the Google Sheets API:");
-                mOutputText.setText(TextUtils.join("\n", output));
-            }
+            listener.onTaskCompleted();
         }
+
 
         @Override
         protected void onCancelled() {
@@ -418,13 +420,13 @@ public class GoogleDriveActivity extends Activity
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
                     startActivityForResult(
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                            GoogleDriveActivity.REQUEST_AUTHORIZATION);
+                            REQUEST_AUTHORIZATION);
                 } else {
-                    mOutputText.setText("The following error occurred:\n"
-                            + mLastError.getMessage());
+                    Toast.makeText(getApplicationContext(), "The following error occurred:"
+                            + mLastError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             } else {
-                mOutputText.setText("Request cancelled.");
+                Toast.makeText(getApplicationContext(), "Request cancelled.", Toast.LENGTH_LONG).show();
             }
         }
     }
