@@ -22,5 +22,5 @@ public interface SheetsTaskListener {
     String getSheetId();
     String getSheetRange();
     void onTaskCompleted();
-    void processData(List row);
+    void processData(List<List<Object>> values);
 }

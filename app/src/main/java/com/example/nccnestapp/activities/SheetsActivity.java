@@ -43,11 +43,13 @@ public class SheetsActivity extends AbstractActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sheets);
         mResults = new ArrayList<>();
-        makeApiCall();
+        makeSheetsApiCall();
     }
 
+
     @Override
-    protected void makeApiCall() {
+    protected void makeSheetsApiCall() {
+        //  For Guest Sheet:
         getResultsFromApi(new SheetsTaskListener() {
 
             @Override
@@ -60,32 +62,38 @@ public class SheetsActivity extends AbstractActivity {
                 return SHEET_RANGE;
             }
 
+
             @Override
             public void onTaskCompleted() {
                 ((TextView)findViewById(R.id.admin_list)).setText(TextUtils.join("\n", mResults));
             }
 
+
             @Override
-            public void processData(List row) {
-                PantryGuest guest = new PantryGuest()
-                        .setEmail(row.get(1)).setPin(row.get(2))
-                        .setLastName(row.get(3)).setFirstName(row.get(4))
-                        .setPhone(row.get(5)).setStreet(row.get(6))
-                        .setCity(row.get(7)).setState(row.get(8))
-                        .setZip(row.get(9)).setSchoolID(row.get(10))
-                        .setGender(row.get(11)).setAge(row.get(12))
-                        .setSize(row.get(13)).setIncome(row.get(14))
-                        .setFoodStamps(row.get(15)).setFoodPrograms(row.get(16))
-                        .setStatusEmploy(row.get(17)).setStatusHealth(row.get(18))
-                        .setStatusHousing(row.get(19)).setStatusChild(row.get(20))
-                        .setChildUnder1(row.get(21)).setChild1to5(row.get(22))
-                        .setChild6to12(row.get(23)).setChild13to18(row.get(24))
-                        .setDietNeeds(row.get(25)).setFoundFrom(row.get(26) + " " + row.get(27))
-                        .setComments(row.get(28)).setHelpedBy(row.get(29));
-                mResults.add(guest);
+            public void processData(List<List<Object>> values) {
+                if (values != null) {
+                    values.remove(0);
+
+                    for (List row : values) {
+                        PantryGuest guest = new PantryGuest()
+                                .setEmail(row.get(1)).setPin(row.get(2))
+                                .setLastName(row.get(3)).setFirstName(row.get(4))
+                                .setPhone(row.get(5)).setStreet(row.get(6))
+                                .setCity(row.get(7)).setState(row.get(8))
+                                .setZip(row.get(9)).setSchoolID(row.get(10))
+                                .setGender(row.get(11)).setAge(row.get(12))
+                                .setSize(row.get(13)).setIncome(row.get(14))
+                                .setFoodStamps(row.get(15)).setFoodPrograms(row.get(16))
+                                .setStatusEmploy(row.get(17)).setStatusHealth(row.get(18))
+                                .setStatusHousing(row.get(19)).setStatusChild(row.get(20))
+                                .setChildUnder1(row.get(21)).setChild1to5(row.get(22))
+                                .setChild6to12(row.get(23)).setChild13to18(row.get(24))
+                                .setDietNeeds(row.get(25)).setFoundFrom(row.get(26) + " " + row.get(27))
+                                .setComments(row.get(28)).setHelpedBy(row.get(29));
+                        mResults.add(guest);
+                    }
+                }
             }
         });
     }
-
-
 }

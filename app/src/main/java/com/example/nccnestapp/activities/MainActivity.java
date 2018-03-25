@@ -43,6 +43,7 @@ import static com.example.nccnestapp.utilities.Constants.FORMS_URI;
 
 public class MainActivity extends AbstractActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +75,7 @@ public class MainActivity extends AbstractActivity {
 
 
     @Override
-    protected void makeApiCall() {
+    protected void makeSheetsApiCall() {
         //  Do nothing
     }
 
@@ -82,6 +83,7 @@ public class MainActivity extends AbstractActivity {
     private Cursor getCursor() {
         return getContentResolver().query(Uri.parse(FORMS_URI), null, null, null, null);
     }
+
 
     private List<ListElement> getListFromCursor(Cursor cursor) {
         List<ListElement> listElements = new ArrayList<>();
@@ -102,11 +104,13 @@ public class MainActivity extends AbstractActivity {
         return listElements;
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

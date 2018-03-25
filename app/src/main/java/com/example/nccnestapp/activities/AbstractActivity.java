@@ -86,7 +86,7 @@ public abstract class AbstractActivity extends AppCompatActivity implements
     /**
      * Include a call to getResultsFromApi.
      */
-    protected abstract void makeApiCall();
+    protected abstract void makeSheetsApiCall();
 
 
     /**
@@ -154,7 +154,7 @@ public abstract class AbstractActivity extends AppCompatActivity implements
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
-                makeApiCall();
+                makeSheetsApiCall();
             } else {
                 // Start a dialog from which the user can choose an account
                 startActivityForResult(
@@ -189,7 +189,7 @@ public abstract class AbstractActivity extends AppCompatActivity implements
                     Toast.makeText(getApplicationContext(), R.string.str_gplay_svcs_install, Toast.LENGTH_LONG).show();
                     finish();
                 } else {
-                    makeApiCall();
+                    makeSheetsApiCall();
                 }
                 break;
             case REQUEST_ACCOUNT_PICKER:
@@ -204,13 +204,13 @@ public abstract class AbstractActivity extends AppCompatActivity implements
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
                         mCredential.setSelectedAccountName(accountName);
-                        makeApiCall();
+                        makeSheetsApiCall();
                     }
                 }
                 break;
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
-                    makeApiCall();
+                    makeSheetsApiCall();
                 }
                 break;
         }
@@ -375,12 +375,7 @@ public abstract class AbstractActivity extends AppCompatActivity implements
             ValueRange response = this.mService.spreadsheets().values()
                     .get(spreadsheetId, range)
                     .execute();
-            List<List<Object>> values = response.getValues();
-            if (values != null) {
-                values.remove(0);
-                for (List row : values)
-                    listener.processData(row);
-            }
+                    listener.processData(response.getValues());
             return null;
         }
 
