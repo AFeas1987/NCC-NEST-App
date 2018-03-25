@@ -15,12 +15,13 @@
  */
 package com.example.nccnestapp.utilities;
 
-import java.util.List;
+import android.app.Application;
+import io.realm.Realm;
 
 
-public interface SheetsTaskListener {
-    String getSheetId();
-    String getSheetRange();
-    void onTaskCompleted();
-    void processData(List row);
+public class RealmApplication extends Application {
+    public void onCreate() {
+        super.onCreate();
+        Realm.init(this);
+    }
 }

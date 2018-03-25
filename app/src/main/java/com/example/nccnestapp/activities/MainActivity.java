@@ -51,8 +51,7 @@ public class MainActivity extends AbstractActivity {
         setSupportActionBar(toolbar);
         if (!isCollectAppInstalled()) {
             finish();
-            Toast.makeText(this, getString(R.string.collect_app_not_installed), Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(this, getString(R.string.collect_app_not_installed), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -71,6 +70,12 @@ public class MainActivity extends AbstractActivity {
             recyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         }
+    }
+
+
+    @Override
+    protected void makeApiCall() {
+        //  Do nothing
     }
 
 
@@ -112,8 +117,6 @@ public class MainActivity extends AbstractActivity {
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }

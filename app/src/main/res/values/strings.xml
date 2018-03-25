@@ -26,4 +26,7 @@ limitations under the License.
     <string name="strform_api_btn_test">Click the \'%s\' button to test the API.</string>
     <string name="str_gplay_svcs_install">This app requires Google Play Services. Please install Google Play Services on your device and relaunch this app.</string>
     <string name="str_needs_account">This app needs to access your Google account (via Contacts).</string>
+    <string name="str_calling_sheets">Calling Google Sheets API ...</string>
+    <string name="str_error_occurred">The following error occurred:</string>
+    <string name="str_request_cancelled">Request cancelled.</string>
 </resources>
