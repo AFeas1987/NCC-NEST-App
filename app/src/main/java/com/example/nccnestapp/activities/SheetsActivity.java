@@ -17,6 +17,7 @@ package com.example.nccnestapp.activities;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.nccnestapp.R;
@@ -26,12 +27,22 @@ import com.example.nccnestapp.utilities.SheetsTaskListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.ObjectServerError;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.SyncConfiguration;
+import io.realm.SyncCredentials;
+import io.realm.SyncUser;
+
+import static com.example.nccnestapp.utilities.Constants.AUTH_URL;
+import static com.example.nccnestapp.utilities.Constants.REALM_BASE_URL;
 import static com.example.nccnestapp.utilities.Constants.SHEET_ID;
 import static com.example.nccnestapp.utilities.Constants.SHEET_RANGE;
 
 public class SheetsActivity extends AbstractActivity {
 
     static List<PantryGuest> mResults;
+    static RealmResults<PantryGuest> guestResults;
 
 
     /**
@@ -43,7 +54,37 @@ public class SheetsActivity extends AbstractActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sheets);
         mResults = new ArrayList<>();
-        makeSheetsApiCall();
+        SyncUser.logInAsync(SyncCredentials.nickname("NESTAdmin", true), AUTH_URL, new SyncUser.Callback<SyncUser>() {
+
+            @Override
+            public void onSuccess(SyncUser result) {
+                guestResults = setUpRealm();
+                Log.d("DEBUG", "~~~~~~~~~~~~~~~  Realm path: " + ((realm != null) ? realm.getPath() : null));
+                displayRealmResults();
+                //makeSheetsApiCall();
+            }
+
+            @Override
+            public void onError(ObjectServerError error) {
+                realm = Realm.getDefaultInstance();
+                Log.d("DEBUG", "~~~~~~~~~~~~~~~  Realm path: " + ((realm != null) ? realm.getPath() : null));
+                //makeSheetsApiCall();
+            }
+
+        });
+    }
+
+
+    private RealmResults<PantryGuest> setUpRealm() {
+        SyncConfiguration configuration = new SyncConfiguration.Builder(
+                SyncUser.current(), REALM_BASE_URL + "/default").build();
+        realm = Realm.getInstance(configuration);
+        return realm.where(PantryGuest.class).findAll();
+    }
+
+
+    private void displayRealmResults(){
+        ((TextView)findViewById(R.id.admin_list)).setText(TextUtils.join("\n", guestResults.toArray()));
     }
 
 
@@ -82,7 +123,7 @@ public class SheetsActivity extends AbstractActivity {
                                 .setCity(row.get(7)).setState(row.get(8))
                                 .setZip(row.get(9)).setSchoolID(row.get(10))
                                 .setGender(row.get(11)).setAge(row.get(12))
-                                .setSize(row.get(13)).setIncome(row.get(14))
+                                .setHouseholdSize(row.get(13)).setIncome(row.get(14))
                                 .setFoodStamps(row.get(15)).setFoodPrograms(row.get(16))
                                 .setStatusEmploy(row.get(17)).setStatusHealth(row.get(18))
                                 .setStatusHousing(row.get(19)).setStatusChild(row.get(20))
@@ -95,5 +136,11 @@ public class SheetsActivity extends AbstractActivity {
                 }
             }
         });
+    }
+
+
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 }

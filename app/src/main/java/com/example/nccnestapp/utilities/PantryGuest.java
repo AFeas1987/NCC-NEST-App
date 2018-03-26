@@ -15,17 +15,29 @@
  */
 package com.example.nccnestapp.utilities;
 
-public class PantryGuest {
-    private String first, last, email, phone, nccID;
-    private String street, city, state, gender, age;
-    private String statusEmploy, statusHealth, statusHousing, statusChild;
-    private String dietNeeds, foundFrom, comments, helpedBy;
-    private int zip, pin;
-    private Household household;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
-    public PantryGuest(){
-        household = new Household();
-    }
+
+/**
+ * Item class representing a guest of the pantry.  For use with ODK Collect and Realm.
+ */
+public class PantryGuest extends RealmObject{
+    @PrimaryKey
+    @Required
+    private String email;
+
+    @Required
+    private Integer pin;
+
+    private String first, last, phone, street, city, state, gender, age;
+    private String statusEmploy, statusHealth, statusHousing, statusChild;
+    private String dietNeeds, foundFrom, helpedBy;
+    private int zip;
+    private String nccID, comments;
+    int householdSize, income, childUnder1, child1to5, child6to12, child13to18;
+    boolean foodStamps, foodPrograms;
 
     /** Setters **/
     public PantryGuest setFirstName(Object first) {this.first = (String)first; return this;}
@@ -50,14 +62,15 @@ public class PantryGuest {
     public PantryGuest setHelpedBy(Object helpedBy) {this.helpedBy = (String)helpedBy; return this;}
 
     /** Household Setters **/
-    public PantryGuest setSize(Object size) {household.size = Integer.parseInt((String)size);  return this;}
-    public PantryGuest setIncome(Object income) {household.income = Integer.parseInt((String)income); return this;}
-    public PantryGuest setChildUnder1(Object childUnder1) {household.childUnder1 = Integer.parseInt((String)childUnder1);  return this;}
-    public PantryGuest setChild1to5(Object child1to5) {household.child1to5 = Integer.parseInt((String)child1to5); return this;}
-    public PantryGuest setChild6to12(Object child6to12) {household.child6to12 = Integer.parseInt((String)child6to12); return this;}
-    public PantryGuest setChild13to18(Object child13to18) {household.child13to18 = Integer.parseInt((String)child13to18); return this;}
-    public PantryGuest setFoodStamps(Object foodStamps) {household.foodStamps = ((String)foodStamps).equals("y"); return this;}
-    public PantryGuest setFoodPrograms(Object foodPrograms) {household.foodPrograms = ((String)foodPrograms).equals("y"); return this;}
+    public PantryGuest setHouseholdSize(Object householdSize) {
+        householdSize = Integer.parseInt((String) householdSize);  return this;}
+    public PantryGuest setIncome(Object income) {income = Integer.parseInt((String)income); return this;}
+    public PantryGuest setChildUnder1(Object childUnder1) {childUnder1 = Integer.parseInt((String)childUnder1);  return this;}
+    public PantryGuest setChild1to5(Object child1to5) {child1to5 = Integer.parseInt((String)child1to5); return this;}
+    public PantryGuest setChild6to12(Object child6to12) {child6to12 = Integer.parseInt((String)child6to12); return this;}
+    public PantryGuest setChild13to18(Object child13to18) {child13to18 = Integer.parseInt((String)child13to18); return this;}
+    public PantryGuest setFoodStamps(Object foodStamps) {foodStamps = ((String)foodStamps).equals("y"); return this;}
+    public PantryGuest setFoodPrograms(Object foodPrograms) {foodPrograms = ((String)foodPrograms).equals("y"); return this;}
 
     /** Getters **/
     public String getFirst() {return first;}
@@ -76,17 +89,16 @@ public class PantryGuest {
     public String getDietNeeds() {return dietNeeds;}
     public int getZip() {return zip;}
     public String getAge() {return age;}
-    public Household getHousehold() {return household;}
 
     /** Household Getters **/
-    public int getSize() {return household.size; }
-    public int getIncome() {return household.income;}
-    public int getChildUnder1() {return household.childUnder1;}
-    public int getChild1to5() {return household.child1to5;}
-    public int getChild6to12() {return household.child6to12;}
-    public int getChild13to18() {return household.child13to18;}
-    public boolean hasFoodStamps() {return household.foodStamps;}
-    public boolean hasFoodPrograms() {return household.foodPrograms;}
+    public int getHouseholdSize() {return householdSize; }
+    public int getIncome() {return income;}
+    public int getChildUnder1() {return childUnder1;}
+    public int getChild1to5() {return child1to5;}
+    public int getChild6to12() {return child6to12;}
+    public int getChild13to18() {return child13to18;}
+    public boolean hasFoodStamps() {return foodStamps;}
+    public boolean hasFoodPrograms() {return foodPrograms;}
 
 
     /** Verify pin input **/
@@ -96,14 +108,5 @@ public class PantryGuest {
     @Override
     public String toString(){
         return String.format("%20s  %13s, %-12s", String.format("[%s]", email), last, first);
-    }
-
-
-    /**
-     *  Inner class for household info
-     */
-    private class Household {
-        private int size, income, childUnder1, child1to5, child6to12, child13to18;
-        private boolean foodStamps, foodPrograms;
     }
 }

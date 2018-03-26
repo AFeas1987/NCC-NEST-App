@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import io.realm.Realm;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -68,6 +69,7 @@ public abstract class AbstractActivity extends AppCompatActivity implements
 
     private GoogleAccountCredential mCredential;
     public static ProgressDialog progressDialog;
+    public Realm realm;
 
 
     /**
