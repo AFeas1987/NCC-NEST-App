@@ -32,13 +32,13 @@ realm {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
-    compile 'pub.devrel:easypermissions:0.3.0'
-    compile('com.google.api-client:google-api-client-android:1.23.0') {
+    implementation 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation 'pub.devrel:easypermissions:0.3.0'
+    implementation('com.google.api-client:google-api-client-android:1.23.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    compile('com.google.apis:google-api-services-sheets:v4-rev511-1.23.0') {
+    implementation('com.google.apis:google-api-services-sheets:v4-rev511-1.23.0') {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -47,5 +47,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'io.realm:android-adapters:2.1.1'
-    compile 'com.novoda:sexp:1.0.8'
+    implementation 'com.novoda:sexp:1.0.8'
 }
