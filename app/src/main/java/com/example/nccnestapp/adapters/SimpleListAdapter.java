@@ -28,7 +28,7 @@ import com.example.nccnestapp.utilities.ListElement;
 
 import java.util.List;
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+public class SimpleListAdapter extends RecyclerView.Adapter<SimpleListAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
         void onItemClick(ListElement item);
@@ -59,13 +59,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         }
     }
 
-    public ListAdapter(List<ListElement> listElements, OnItemClickListener listener) {
+    public SimpleListAdapter(List<ListElement> listElements, OnItemClickListener listener) {
         this.listElements = listElements;
         this.listener = listener;
     }
 
     @Override
-    public ListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SimpleListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
         return new ViewHolder(v);
     }

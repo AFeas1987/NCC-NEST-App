@@ -50,13 +50,19 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import io.realm.ObjectServerError;
 import io.realm.Realm;
+import io.realm.SyncConfiguration;
+import io.realm.SyncCredentials;
+import io.realm.SyncUser;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static com.example.nccnestapp.utilities.Constants.AUTH_URL;
 import static com.example.nccnestapp.utilities.Constants.COLLECT_PACKAGE_NAME;
 import static com.example.nccnestapp.utilities.Constants.GOOGLE_APP_NAME;
 import static com.example.nccnestapp.utilities.Constants.PREF_ACCOUNT_NAME;
+import static com.example.nccnestapp.utilities.Constants.REALM_BASE_URL;
 import static com.example.nccnestapp.utilities.Constants.REQUEST_ACCOUNT_PICKER;
 import static com.example.nccnestapp.utilities.Constants.REQUEST_AUTHORIZATION;
 import static com.example.nccnestapp.utilities.Constants.REQUEST_GOOGLE_PLAY_SERVICES;
@@ -82,6 +88,23 @@ public abstract class AbstractActivity extends AppCompatActivity implements
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+
+
+        SyncUser.logInAsync(SyncCredentials.nickname("NESTAdmin", true), AUTH_URL, new SyncUser.Callback<SyncUser>() {
+
+            @Override
+            public void onSuccess(SyncUser result) {
+                SyncConfiguration configuration = new SyncConfiguration.Builder(
+                        SyncUser.current(), REALM_BASE_URL + "/default").build();
+                realm = Realm.getInstance(configuration);
+            }
+
+            @Override
+            public void onError(ObjectServerError error) {
+                realm = Realm.getDefaultInstance();
+            }
+
+        });
     }
 
 

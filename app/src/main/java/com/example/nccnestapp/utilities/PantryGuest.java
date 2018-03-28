@@ -39,6 +39,22 @@ public class PantryGuest extends RealmObject{
     int householdSize, income, childUnder1, child1to5, child6to12, child13to18;
     boolean foodStamps, foodPrograms;
 
+
+    /** Initializes an empty {@link PantryGuest} **/
+    public PantryGuest(){super();}
+
+
+    /**
+     * Initializes a new {@link PantryGuest} with email and pin.
+     *
+     * @param email
+     * @param pin
+     */
+    public PantryGuest (String email, String pin){
+        this.email = email;
+        setPin(pin);
+    }
+
     /** Setters **/
     public PantryGuest setFirstName(Object first) {this.first = (String)first; return this;}
     public PantryGuest setLastName(Object last) {this.last = (String)last; return this;}

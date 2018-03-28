@@ -13,7 +13,8 @@
     android:id="@+id/action_admin"
     android:orderInCategory="20"
     android:title="@string/str_admin_menu"
-    app:showAsAction="always" />
+    android:enabled="true"
+    app:showAsAction="always"/>
 
 
 </menu>

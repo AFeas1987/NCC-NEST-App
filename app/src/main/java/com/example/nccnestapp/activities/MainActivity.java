@@ -21,18 +21,23 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nccnestapp.R;
-import com.example.nccnestapp.adapters.ListAdapter;
+import com.example.nccnestapp.adapters.SimpleListAdapter;
+import com.example.nccnestapp.fragments.TestFragment;
 import com.example.nccnestapp.utilities.ListElement;
+import com.example.nccnestapp.utilities.PantryGuest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +47,8 @@ import static com.example.nccnestapp.utilities.Constants.DISPLAY_SUBTEXT;
 import static com.example.nccnestapp.utilities.Constants.FORMS_URI;
 
 public class MainActivity extends AbstractActivity {
+
+    private int formId;
 
 
     @Override
@@ -59,11 +66,10 @@ public class MainActivity extends AbstractActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new ListAdapter(getListFromCursor(getCursor()), new ListAdapter.OnItemClickListener() {
-            @Override public void onItemClick(ListElement item) {
-                Intent i = new Intent(Intent.ACTION_EDIT, Uri.parse(FORMS_URI + "/" + item.getId()));
-                startActivityIfAvailable(i);
-            }
+        recyclerView.setAdapter(new SimpleListAdapter(getListFromCursor(getCursor()), item -> {
+            recyclerView.setVisibility(View.GONE);
+            getSupportFragmentManager().beginTransaction().add(R.id.frame_layout_main, new TestFragment()).commit();
+            formId = item.getId();
         }));
 
         TextView emptyView = (TextView) findViewById(R.id.empty_view);
@@ -71,6 +77,36 @@ public class MainActivity extends AbstractActivity {
             recyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         }
+    }
+
+
+    public void showPinDialog(String email) {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_pin, null);
+        EditText pinEdit = dialogView.findViewById(R.id.edit_pin);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pin creation")
+                .setMessage("Create a pin number")
+                .setView(dialogView)
+                .setPositiveButton("Ok", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(alertView -> {
+            if (isValidPin(pinEdit.getText())) {
+                this.realm.executeTransactionAsync(realm -> {
+                    PantryGuest guest = new PantryGuest(email, pinEdit.getText().toString());
+                    realm.insert(guest);
+                });
+                startActivity(new Intent(getApplicationContext(), SheetsActivity.class));
+                dialog.dismiss();
+                finish();
+            } else
+                Toast.makeText(getApplicationContext(), "Invalid pin", Toast.LENGTH_LONG).show();
+        });
+    }
+
+
+    private void launchCollectApp() {
+        startActivityIfAvailable(new Intent(Intent.ACTION_EDIT, Uri.parse(FORMS_URI + "/" + formId)));
     }
 
 
@@ -124,5 +160,14 @@ public class MainActivity extends AbstractActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    private boolean isValidPin(CharSequence target) {
+        Integer i = null;
+        try {
+            i = Integer.parseInt(target.toString());
+        }
+        catch (NumberFormatException ex){}
+        return i != null && i >= 0 && target.toString().length() == 4;
     }
 }

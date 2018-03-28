@@ -116,8 +116,8 @@ public class SheetsActivity extends AbstractActivity {
                     values.remove(0);
 
                     for (List row : values) {
-                        PantryGuest guest = new PantryGuest()
-                                .setEmail(row.get(1)).setPin(row.get(2))
+                        PantryGuest guest = new PantryGuest(((String)row.get(1)), ((String)row.get(2)))
+                       //         .setEmail(row.get(1)).setPin(row.get(2))
                                 .setLastName(row.get(3)).setFirstName(row.get(4))
                                 .setPhone(row.get(5)).setStreet(row.get(6))
                                 .setCity(row.get(7)).setState(row.get(8))
