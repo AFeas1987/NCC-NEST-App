@@ -25,6 +25,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,7 +69,9 @@ public class MainActivity extends AbstractActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new SimpleListAdapter(getListFromCursor(getCursor()), item -> {
             recyclerView.setVisibility(View.GONE);
-            getSupportFragmentManager().beginTransaction().add(R.id.frame_layout_main, new TestFragment()).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                    .add(R.id.frame_layout_main, new TestFragment()).commit();
             formId = item.getId();
         }));
 
@@ -100,7 +103,7 @@ public class MainActivity extends AbstractActivity {
                 dialog.dismiss();
                 finish();
             } else
-                Toast.makeText(getApplicationContext(), "Invalid pin", Toast.LENGTH_LONG).show();
+                Toast.makeText(dialog.getContext(), "Invalid pin", Toast.LENGTH_LONG).show();
         });
     }
 
@@ -164,10 +167,8 @@ public class MainActivity extends AbstractActivity {
 
     private boolean isValidPin(CharSequence target) {
         Integer i = null;
-        try {
-            i = Integer.parseInt(target.toString());
-        }
-        catch (NumberFormatException ex){}
+        try {i = Integer.parseInt(target.toString());}
+        catch (NumberFormatException ex) {Log.d("DEBUG", ex.getMessage());}
         return i != null && i >= 0 && target.toString().length() == 4;
     }
 }

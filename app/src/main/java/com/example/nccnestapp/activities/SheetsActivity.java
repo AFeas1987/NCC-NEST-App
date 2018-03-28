@@ -16,11 +16,15 @@
 package com.example.nccnestapp.activities;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.example.nccnestapp.R;
+import com.example.nccnestapp.adapters.PantryGuestRecyclerAdapter;
 import com.example.nccnestapp.utilities.PantryGuest;
 import com.example.nccnestapp.utilities.SheetsTaskListener;
 
@@ -84,7 +88,45 @@ public class SheetsActivity extends AbstractActivity {
 
 
     private void displayRealmResults(){
-        ((TextView)findViewById(R.id.admin_list)).setText(TextUtils.join("\n", guestResults.toArray()));
+//        ((TextView)findViewById(R.id.sheets_list)).setText(TextUtils.join("\n", guestResults.toArray()));
+
+
+
+        final PantryGuestRecyclerAdapter recyclerAdapter = new PantryGuestRecyclerAdapter(guestResults);
+        RecyclerView recyclerView = findViewById(R.id.sheets_list);
+        LinearLayoutManager mgr = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(mgr);
+        ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) recyclerView.getLayoutParams();
+        lp.height = 768;
+        recyclerView.setLayoutParams(lp);
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
+
+//        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+//
+//            @Override
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+//                int position = viewHolder.getAdapterPosition();
+//                String email = recyclerAdapter.getItem(position).getEmail();
+//                realm.executeTransactionAsync(realm -> {
+//                    PantryGuest g = realm.where(PantryGuest.class)
+//                            .equalTo("email", email)
+//                            .findFirst();
+//                    if (g != null) {
+//                        g.deleteFromRealm();
+//                    }
+//                });
+//            }
+//        };
+//
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+//        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
 
@@ -106,7 +148,7 @@ public class SheetsActivity extends AbstractActivity {
 
             @Override
             public void onTaskCompleted() {
-                ((TextView)findViewById(R.id.admin_list)).setText(TextUtils.join("\n", mResults));
+                ((TextView)findViewById(R.id.sheets_list)).setText(TextUtils.join("\n", mResults));
             }
 
 

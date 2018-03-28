@@ -66,7 +66,7 @@ public class SimpleListAdapter extends RecyclerView.Adapter<SimpleListAdapter.Vi
 
     @Override
     public SimpleListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.simple_list_layout, parent, false);
         return new ViewHolder(v);
     }
 
