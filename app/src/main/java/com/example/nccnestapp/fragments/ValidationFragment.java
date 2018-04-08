@@ -15,13 +15,13 @@ import android.widget.ProgressBar;
 
 import com.example.nccnestapp.R;
 import com.example.nccnestapp.activities.AbstractActivity;
-import com.example.nccnestapp.activities.MainActivity;
+import com.example.nccnestapp.activities.QuestionActivity;
 import com.example.nccnestapp.utilities.PantryGuest;
 
 import io.realm.Case;
 import io.realm.RealmResults;
 
-public class TestFragment extends Fragment {
+public class ValidationFragment extends Fragment {
 
     EditText emailView;
     AbstractActivity myActivity;
@@ -33,23 +33,24 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_test, container, false);
+        return inflater.inflate(R.layout.fragment_validation, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         myActivity = (AbstractActivity) getActivity();
-        emailView = myActivity.findViewById(R.id.edit_email);
+        emailView = myActivity.findViewById(R.id.edit_question_response);
         mProgress = myActivity.findViewById(R.id.progress_valid_email);
         mImage = myActivity.findViewById(R.id.img_valid_email);
         launchButton = myActivity.findViewById(R.id.btn_valid_launch);
         launchButton.setOnClickListener(launchView -> {
-            ((MainActivity)myActivity).showPinDialog(emailView.getText().toString());
-            onDestroyView();
+            ((QuestionActivity)myActivity).showPinDialog(emailView.getText().toString());
+//            onDestroyView();
         });
 
         emailView.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 

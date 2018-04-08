@@ -1,0 +1,114 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    tools:context=".activities.QuestionActivity">
+
+    <!-- Login progress -->
+
+
+    <TextView
+        android:id="@+id/txt_question_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Email"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/txt_question_prompt"
+        app:layout_constraintStart_toStartOf="@+id/txt_question_prompt"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.33" />
+
+
+    <TextView
+        android:id="@+id/txt_question_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Enter your email address"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:transitionName="TXT_PROMPT"
+        app:layout_constraintEnd_toEndOf="@+id/edit_question_response"
+        app:layout_constraintStart_toStartOf="@+id/edit_question_response"
+        app:layout_constraintTop_toBottomOf="@+id/txt_question_title" />
+
+    <EditText
+        android:id="@+id/edit_question_response"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="256dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/editbox_background"
+        android:hint="youremail@example.com"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_question_prompt" />
+
+    <ProgressBar
+        android:id="@+id/progress_valid_email"
+        style="android:attr/progressBarStyleLarge"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:baselineAligned="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/edit_question_response"
+        app:layout_constraintStart_toEndOf="@+id/edit_question_response"
+        app:layout_constraintTop_toTopOf="@+id/edit_question_response" />
+
+    <ImageView
+        android:id="@+id/img_valid_email"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:baselineAligned="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/edit_question_response"
+        app:layout_constraintStart_toEndOf="@+id/edit_question_response"
+        app:layout_constraintTop_toTopOf="@+id/edit_question_response"
+        app:srcCompat="@android:drawable/presence_online" />
+
+    <Button
+        android:id="@+id/btn_valid_launch"
+        style="@android:style/Widget.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:enabled="false"
+        android:text="Begin Registration"
+        android:textStyle="normal|bold"
+        app:layout_constraintEnd_toEndOf="@+id/progress_valid_email"
+        app:layout_constraintHorizontal_bias="0.74"
+        app:layout_constraintStart_toStartOf="@+id/edit_question_response"
+        app:layout_constraintTop_toBottomOf="@+id/edit_question_response" />
+
+
+</android.support.constraint.ConstraintLayout>

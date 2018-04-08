@@ -15,18 +15,67 @@ limitations under the License.
 -->
 <resources>
     <string name="app_name">NCC Nest App</string>
-    <string name="str_main_button">Launch ODK Collect</string>
-    <string name="activity_not_found">Activity not found</string>
     <string name="ok">OK</string>
-    <string name="no_data_available">No data available</string>
-    <string name="collect_app_not_installed">The Collect app is not installed!</string>
-    <string name="str_drive_launch">Get sheets data</string>
     <string name="str_admin_menu">Admin</string>
-    <string name="str_no_network">No network connection available.</string>
-    <string name="strform_api_btn_test">Click the \'%s\' button to test the API.</string>
-    <string name="str_gplay_svcs_install">This app requires Google Play Services. Please install Google Play Services on your device and relaunch this app.</string>
-    <string name="str_needs_account">This app needs to access your Google account (via Contacts).</string>
-    <string name="str_calling_sheets">Calling Google Sheets API ...</string>
-    <string name="str_error_occurred">The following error occurred:</string>
-    <string name="str_request_cancelled">Request cancelled.</string>
+    <string name="str_response_required">Sorry, this response is required</string>
+    <string name="str_response_invalid">Invalid response.</string>
+    <string name="str_constraint_phone">Please enter a valid phone number (###-###-####)</string>
+    <string name="str_constraint_ncc_invalid">Please enter a valid NCC ID</string>
+    <string name="str_constraint_ncc_exists">Another guest has that NCC ID.  Please try again.</string>
+    <string name="str_constraint_range">Number out of range</string>
+    <string name="str_uncheck_decline">Please uncheck the decline option</string>
+    <string name="str_zip_invalid">Please enter a valid 5-digit zip</string>
+    <string name="str_decline">I choose not to answer</string>
+    <string-array name="array_str_states">
+        <item>AL</item>
+        <item>AK</item>
+        <item>AZ</item>
+        <item>AR</item>
+        <item>CA</item>
+        <item>CO</item>
+        <item>CT</item>
+        <item>DE</item>
+        <item>FL</item>
+        <item>GA</item>
+        <item>HI</item>
+        <item>ID</item>
+        <item>IL</item>
+        <item>IN</item>
+        <item>IA</item>
+        <item>KS</item>
+        <item>KY</item>
+        <item>LA</item>
+        <item>ME</item>
+        <item>MD</item>
+        <item>MA</item>
+        <item>MI</item>
+        <item>MN</item>
+        <item>MS</item>
+        <item>MO</item>
+        <item>MT</item>
+        <item>NE</item>
+        <item>NV</item>
+        <item>NH</item>
+        <item>NJ</item>
+        <item>NM</item>
+        <item>NY</item>
+        <item>NC</item>
+        <item>ND</item>
+        <item>OH</item>
+        <item>OK</item>
+        <item>OR</item>
+        <item>PA</item>
+        <item>RI</item>
+        <item>SC</item>
+        <item>SD</item>
+        <item>TN</item>
+        <item>TX</item>
+        <item>UT</item>
+        <item>VT</item>
+        <item>VA</item>
+        <item>WA</item>
+        <item>WV</item>
+        <item>WI</item>
+        <item>WY</item>
+    </string-array>
 </resources>

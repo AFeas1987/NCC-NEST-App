@@ -15,20 +15,20 @@
  */
 package com.example.nccnestapp.utilities;
 
-public class ListElement {
-    private int id;
+public class SimpleListElement {
+//    private int id;
     private String text1;
     private String text2;
 
-    public ListElement(int id, String text1, String text2) {
-        this.id = id;
+    public SimpleListElement(/* int id, */ String text1, String text2) {
+       // this.id = id;
         this.text1 = text1;
         this.text2 = text2;
     }
 
-    public int getId() {
-        return id;
-    }
+//    public int getId() {
+//        return id;
+//    }
 
     public String getText1() {
         return text1;

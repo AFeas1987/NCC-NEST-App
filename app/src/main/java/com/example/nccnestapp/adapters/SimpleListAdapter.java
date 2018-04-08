@@ -24,19 +24,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.nccnestapp.R;
-import com.example.nccnestapp.utilities.ListElement;
+import com.example.nccnestapp.utilities.SimpleListElement;
 
 import java.util.List;
 
 public class SimpleListAdapter extends RecyclerView.Adapter<SimpleListAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(ListElement item);
+        void onItemClick(SimpleListElement item);
     }
 
     private final OnItemClickListener listener;
 
-    private List<ListElement> listElements;
+    private List<SimpleListElement> simpleListElements;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView text1;
@@ -50,7 +50,7 @@ public class SimpleListAdapter extends RecyclerView.Adapter<SimpleListAdapter.Vi
             text2 = v.findViewById(R.id.text2);
         }
 
-        void bind(final ListElement item, final OnItemClickListener listener) {
+        void bind(final SimpleListElement item, final OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(item);
@@ -59,8 +59,8 @@ public class SimpleListAdapter extends RecyclerView.Adapter<SimpleListAdapter.Vi
         }
     }
 
-    public SimpleListAdapter(List<ListElement> listElements, OnItemClickListener listener) {
-        this.listElements = listElements;
+    public SimpleListAdapter(List<SimpleListElement> simpleListElements, OnItemClickListener listener) {
+        this.simpleListElements = simpleListElements;
         this.listener = listener;
     }
 
@@ -72,13 +72,13 @@ public class SimpleListAdapter extends RecyclerView.Adapter<SimpleListAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bind(listElements.get(position), listener);
-        holder.text1.setText(listElements.get(position).getText1());
-        holder.text2.setText(listElements.get(position).getText2());
+        holder.bind(simpleListElements.get(position), listener);
+        holder.text1.setText(simpleListElements.get(position).getText1());
+        holder.text2.setText(simpleListElements.get(position).getText2());
     }
 
     @Override
     public int getItemCount() {
-        return listElements.size();
+        return simpleListElements.size();
     }
 }
