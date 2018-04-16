@@ -19,8 +19,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.nccnestapp.utilities.PantryGuest;
+
 import io.realm.ObjectServerError;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import io.realm.SyncConfiguration;
 import io.realm.SyncCredentials;
 import io.realm.SyncUser;
@@ -41,20 +44,27 @@ public abstract class AbstractActivity extends AppCompatActivity {
 
 
     private void loginToRealm() {
-        SyncUser.logInAsync(SyncCredentials.nickname("NESTAdmin", true), AUTH_URL, new SyncUser.Callback<SyncUser>() {
+        SyncUser.logInAsync(
+                SyncCredentials.nickname("NESTAdmin", true), AUTH_URL,
+                new SyncUser.Callback<SyncUser>() {
 
-            @Override
-            public void onSuccess(@NonNull SyncUser result) {
-                SyncConfiguration configuration = new SyncConfiguration.Builder(
-                        SyncUser.current(), REALM_BASE_URL + "/guests").build();
-                realm = Realm.getInstance(configuration);
-            }
+                    @Override
+                    public void onSuccess(@NonNull SyncUser result) {
+                        SyncConfiguration configuration = new SyncConfiguration.Builder(
+                                SyncUser.current(), REALM_BASE_URL + "/guests").build();
+                        realm = Realm.getInstance(configuration);
+                        final RealmResults<PantryGuest> res =
+                                realm.where(PantryGuest.class).findAll();
+                        Realm.getInstance(SyncConfiguration.automatic())
+                                .executeTransaction(r -> r.copyToRealmOrUpdate(res));
+                        Realm.getInstance(SyncConfiguration.automatic()).close();
+                    }
 
-            @Override
-            public void onError(@NonNull ObjectServerError error) {
-                realm = Realm.getDefaultInstance();
-            }
+                    @Override
+                    public void onError(@NonNull ObjectServerError error) {
+                        realm = Realm.getInstance(SyncConfiguration.automatic());
+                    }
 
-        });
+                });
     }
 }

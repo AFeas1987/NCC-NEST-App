@@ -43,9 +43,8 @@ public class MainActivity extends AbstractActivity {
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
         mainBtn = findViewById(R.id.btn_guest_main);
-        mainBtn.setOnClickListener(view -> {
-            startActivity(new Intent(getApplicationContext(), QuestionActivity.class));
-        });
+        mainBtn.setOnClickListener(view -> startActivity(
+                new Intent(getApplicationContext(), QuestionActivity.class)));
     }
 
 
@@ -58,37 +57,40 @@ public class MainActivity extends AbstractActivity {
 
     private void displayRealmResults() {
         RealmResults<PantryGuest> guestResults = realm.where(PantryGuest.class).findAll();
-        final PantryGuestRecyclerAdapter recyclerAdapter = new PantryGuestRecyclerAdapter(guestResults);
+        final PantryGuestRecyclerAdapter recyclerAdapter =
+                new PantryGuestRecyclerAdapter(guestResults);
         LinearLayoutManager mgr = new LinearLayoutManager(this);
         recView.setLayoutManager(mgr);
-//        ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) recView.getLayoutParams();
-//        lp.height = 768;
-//        recView.setLayoutParams(lp);
         recView.setAdapter(recyclerAdapter);
         recView.setHasFixedSize(true);
         recView.setNestedScrollingEnabled(false);
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(0,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                int position = viewHolder.getAdapterPosition();
-                String email = recyclerAdapter.getItem(position).getEmail();
-                realm.executeTransactionAsync(realm -> {
-                    PantryGuest g = realm.where(PantryGuest.class)
-                            .equalTo("email", email)
-                            .findFirst();
-                    if (g != null) {
-                        g.deleteFromRealm();
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView,
+                                          RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        return false;
                     }
-                });
-            }
-        };
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder,
+                                         int swipeDir) {
+                        int position = viewHolder.getAdapterPosition();
+                        String email = recyclerAdapter.getItem(position).getEmail();
+                        realm.executeTransactionAsync(realm -> {
+                            PantryGuest g = realm.where(PantryGuest.class)
+                                    .equalTo("email", email)
+                                    .findFirst();
+                            if (g != null) {
+                                g.deleteFromRealm();
+                            }
+                        });
+                    }
+                };
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recView);

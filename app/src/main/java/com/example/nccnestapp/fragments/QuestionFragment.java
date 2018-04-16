@@ -1,8 +1,24 @@
+/*
+ * Copyright 2018 AFeas1987
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.nccnestapp.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -17,19 +33,25 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nccnestapp.R;
 import com.example.nccnestapp.activities.QuestionActivity;
+import com.example.nccnestapp.utilities.Constants;
 import com.example.nccnestapp.utilities.PantryGuest;
 import com.example.nccnestapp.utilities.SurveyQuestion;
 
+import java.util.Arrays;
 import java.util.BitSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_CLASS_PHONE;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.example.nccnestapp.utilities.Constants.Constraint.NCC_ID;
 import static com.example.nccnestapp.utilities.Constants.Constraint.PHONE_NUMBER;
@@ -48,13 +70,13 @@ public class QuestionFragment extends Fragment {
     private RadioGroup group;
     private NumberPicker picker;
     private CheckBox[] checks;
+    private ScrollView scroll;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        question = unpackQuestion(getArguments());
-        if (question.options != null)
-            checks = new CheckBox[question.options.length + 1];
+        mActivity = (QuestionActivity) getActivity();
+        question = Constants.QUESTIONS[mActivity.q_number];
         return inflater.inflate(getTypeLayout(), container, false);
     }
 
@@ -62,7 +84,6 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mActivity = (QuestionActivity) getActivity();
         TextView mTitle = mActivity.findViewById(R.id.txt_question_title);
         TextView mPrompt = mActivity.findViewById(R.id.txt_question_prompt);
         Button mButton = mActivity.findViewById(R.id.btn_next_question);
@@ -88,33 +109,39 @@ public class QuestionFragment extends Fragment {
 
 
     private void initializeQuestion() {
+        Object prevResult = mActivity.RESULTS[mActivity.q_number];
+        boolean existPrevRes = prevResult != null;
         switch (question.type) {
             case SELECT_ONE:
                 group = mActivity.findViewById(R.id.radio_question_select);
-                for (String s : question.options){
+                for (String s : question.options) {
                     RadioButton r = new RadioButton(mActivity);
                     r.setText(s);
                     r.setTextColor(Color.WHITE);
                     r.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
-                    r.setLayoutParams(new LayoutParams(
-                            WRAP_CONTENT, WRAP_CONTENT));
+                    r.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
                     group.addView(r);
+                    if (existPrevRes && s.equalsIgnoreCase((String) prevResult))
+                        r.setChecked(true);
                 }
                 group.setVisibility(View.VISIBLE);
                 break;
             case SELECT_MULTI:
+                checks = new CheckBox[question.options.length + 1];
                 LinearLayout layout = mActivity.findViewById(R.id.linear_question_select);
                 layout.setHorizontalGravity(Gravity.START);
                 int i = 0;
-                for (String s : question.options){
+                for (String s : question.options) {
                     CheckBox c = new CheckBox(mActivity);
                     c.setText(s);
                     c.setTextColor(Color.WHITE);
                     c.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
-                    c.setLayoutParams(new LayoutParams(
-                            WRAP_CONTENT, WRAP_CONTENT));
+                    c.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
                     checks[s.equalsIgnoreCase(getString(R.string.str_decline)) ? 0 : ++i] = c;
                     layout.addView(c);
+                    if (existPrevRes &&
+                            Arrays.asList(((String) prevResult).split(", ")).contains(s))
+                        c.setChecked(true);
                 }
                 break;
             case SELECT_NUMBER:
@@ -123,22 +150,44 @@ public class QuestionFragment extends Fragment {
                 picker.setMinValue(question.min);
                 picker.setMaxValue(question.max);
                 picker.setBackgroundColor(Color.WHITE);
-                picker.setLayoutParams(new LayoutParams(
-                        WRAP_CONTENT, WRAP_CONTENT));
+                picker.setLayoutParams(new LayoutParams(WRAP_CONTENT, MATCH_PARENT));
                 layout.addView(picker);
+                if (existPrevRes)
+                    picker.setValue(Integer.parseInt((String)prevResult));
                 break;
             case NUMBER_ENTRY:
                 mResponse = mActivity.findViewById(R.id.edit_question_response);
                 mResponse.setHint(question.hint);
                 mResponse.setInputType(TYPE_CLASS_NUMBER);
+                if (existPrevRes)
+                    mResponse.setText((String)prevResult);
                 break;
             case ADDRESS:
                 Spinner spinner = mActivity.findViewById(R.id.spinner_address_state);
                 spinner.setSelection(31, false);
+                if (existPrevRes && prevResult.getClass().isArray()) {
+                    String[] addressult = (String[]) prevResult;
+                    EditText street = mActivity.findViewById(R.id.edit_address_street);
+                    EditText city = mActivity.findViewById(R.id.edit_address_city);
+                    EditText zip = mActivity.findViewById(R.id.edit_address_zip);
+                    street.setText(addressult[0]);
+                    city.setText(addressult[1]);
+                    zip.setText(addressult[3]);
+                    int count = spinner.getAdapter().getCount();
+                    for (int j = 0; j < count; j++) {
+                        String s = (String)spinner.getAdapter().getItem(j);
+                        if (s.equals(addressult[2])) {
+                            spinner.setSelection(j);
+                            break;
+                        }
+                    }
+                }
                 break;
             default:
                 mResponse = mActivity.findViewById(R.id.edit_question_response);
                 mResponse.setHint(question.hint);
+                if (existPrevRes)
+                    mResponse.setText((String)prevResult);
                 break;
         }
         for (int c : question.constraints) {
@@ -169,10 +218,23 @@ public class QuestionFragment extends Fragment {
                 }
                 if (bitSet.cardinality() == 0 || !bitSet.get(0) ||
                         (bitSet.get(0) && bitSet.cardinality() == 1)) {
-                    mActivity.RESULTS[q_number] = bitSet;
+                    String[] opts = question.options;
+                    String result;
+                    if (bitSet.get(0))
+                        result = opts[opts.length - 1];
+                    else {
+                        StringBuilder str = new StringBuilder();
+                        for (int i = 1; i <= opts.length; i++)
+                            if (bitSet.get(i))
+                                str.append(opts[i - 1]).append(", ");
+                        result = str.length() < 2 ?
+                                "" : str.substring(0, str.length() - 2);
+                    }
+                    mActivity.RESULTS[q_number] = result;
                     mActivity.onFragmentEnd();
                 }
-                else displayToastConstraint(getString(R.string.str_uncheck_decline));
+                else
+                    displayToastConstraint(getString(R.string.str_uncheck_decline));
                 break;
             case SELECT_ONE:
                 int i = group.getCheckedRadioButtonId();
@@ -180,7 +242,7 @@ public class QuestionFragment extends Fragment {
                     displayToastRequired();
                     return;
                 }
-                mActivity.RESULTS[q_number] =
+                mActivity.RESULTS[q_number] = i == -1 ? null :
                         ((RadioButton)mActivity.findViewById(i)).getText().toString();
                 mActivity.onFragmentEnd();
                 break;
@@ -200,9 +262,11 @@ public class QuestionFragment extends Fragment {
                     displayToastConstraint(getString(R.string.str_zip_invalid));
                     return;
                 }
-                mActivity.RESULTS[q_number] = new String[] {
-                        street.getText().toString(), city.getText().toString(),
-                        (String)spinner.getSelectedItem(), zip.getText().toString()
+                mActivity.RESULTS[q_number] = empty ? null : new String[] {
+                        street.getText().toString(),
+                        city.getText().toString(),
+                        (String)spinner.getSelectedItem(),
+                        zip.getText().toString()
                 };
                 mActivity.onFragmentEnd();
                 break;
@@ -232,19 +296,22 @@ public class QuestionFragment extends Fragment {
             switch (c) {
                 case PHONE_NUMBER:
                     if (!r.matches("[2-9]\\d{2}-[2-9]\\d{2}-\\d{4}")) {
-                        displayToastConstraint(getResources().getString(R.string.str_constraint_phone));
+                        displayToastConstraint(getResources()
+                                .getString(R.string.str_constraint_phone));
                         return false;
                     }
                     break;
                 case NCC_ID:
                     if (!r.matches("N00[0-9]{6}")) {
-                        displayToastConstraint(getResources().getString(R.string.str_constraint_ncc_invalid));
+                        displayToastConstraint(getResources()
+                                .getString(R.string.str_constraint_ncc_invalid));
                         return false;
                     }
                     if (mActivity.realm.where(PantryGuest.class)
                             .equalTo("nccID", r)
                             .findAll().size() != 0) {
-                        displayToastConstraint(getResources().getString(R.string.str_constraint_ncc_exists));
+                        displayToastConstraint(getResources()
+                                .getString(R.string.str_constraint_ncc_exists));
                         return false;
                     }
                     break;
@@ -252,7 +319,8 @@ public class QuestionFragment extends Fragment {
         if (question.type == NUMBER_ENTRY &&
                 (Integer.parseInt(r) < question.min ||
                         Integer.parseInt(r) > question.max)) {
-            displayToastConstraint(getResources().getString(R.string.str_constraint_range));
+            displayToastConstraint(getResources()
+                    .getString(R.string.str_constraint_range));
             return false;
         }
         return true;
@@ -260,24 +328,13 @@ public class QuestionFragment extends Fragment {
 
 
     private void displayToastConstraint(String message) {
-        Toast.makeText(mActivity.getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(mActivity.getApplicationContext(),
+                message, Toast.LENGTH_LONG).show();
     }
 
 
     private void displayToastRequired() {
-        Toast.makeText(mActivity.getApplicationContext(), R.string.str_response_required, Toast.LENGTH_LONG).show();
-    }
-
-
-    private SurveyQuestion unpackQuestion(Bundle args){
-        SurveyQuestion q = new SurveyQuestion(args.getInt("TYPE"), args.getInt("REQUIRED") == 1,
-                args.getString("TITLE"), args.getString("PROMPT"), args.getIntArray("CONSTRAINTS"));
-        q.min = args.getInt("MIN");
-        q.max = args.getInt("MAX");
-        q.hint = args.getString("HINT");
-        q.setOptions(args.getStringArray("OPTIONS"));
-        q.msgRequired = args.getString("MSG_REQUIRED");
-        q.msgConstraint = args.getString("MSG_CONSTRAINT");
-        return q;
+        Toast.makeText(mActivity.getApplicationContext(),
+                R.string.str_response_required, Toast.LENGTH_LONG).show();
     }
 }

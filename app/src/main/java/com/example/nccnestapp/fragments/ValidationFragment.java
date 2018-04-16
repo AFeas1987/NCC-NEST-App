@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018 AFeas1987
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.nccnestapp.fragments;
 
 import android.os.Bundle;
@@ -29,10 +44,10 @@ public class ValidationFragment extends Fragment {
     ProgressBar mProgress;
     ImageView mImage;
     Button launchButton;
+    TextWatcher eListener;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_validation, container, false);
     }
 
@@ -49,7 +64,7 @@ public class ValidationFragment extends Fragment {
 //            onDestroyView();
         });
 
-        emailView.addTextChangedListener(new TextWatcher() {
+        emailView.addTextChangedListener(eListener = new TextWatcher() {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -58,19 +73,22 @@ public class ValidationFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                emailView = myActivity.findViewById(R.id.edit_question_response);
                 mImage.setVisibility(View.GONE);
                 mProgress.setVisibility(View.VISIBLE);
-                mResults = myActivity.realm.where(PantryGuest.class).equalTo("email", emailView.getText().toString(), Case.INSENSITIVE).findAll();
-                mProgress.setVisibility(View.GONE);
-                if (!isValidEmail(emailView.getText()) || mResults.size() != 0) {
-                    mImage.setImageResource(android.R.drawable.ic_delete);
-                    mImage.setVisibility(View.VISIBLE);
-                    launchButton.setEnabled(false);
-                }
-                else {
-                    mImage.setImageResource(android.R.drawable.presence_online);
-                    mImage.setVisibility(View.VISIBLE);
-                    launchButton.setEnabled(true);
+                if (myActivity.realm != null) {
+                    mResults = myActivity.realm.where(PantryGuest.class)
+                            .equalTo("email", emailView.getText().toString(), Case.INSENSITIVE).findAll();
+                    mProgress.setVisibility(View.GONE);
+                    if (!isValidEmail(emailView.getText()) || mResults.size() != 0) {
+                        mImage.setImageResource(android.R.drawable.ic_delete);
+                        mImage.setVisibility(View.VISIBLE);
+                        launchButton.setEnabled(false);
+                    } else {
+                        mImage.setImageResource(android.R.drawable.presence_online);
+                        mImage.setVisibility(View.VISIBLE);
+                        launchButton.setEnabled(true);
+                    }
                 }
             }
 
@@ -79,6 +97,13 @@ public class ValidationFragment extends Fragment {
 
             }
         });
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        emailView.removeTextChangedListener(eListener);
+        super.onDestroyView();
     }
 
 

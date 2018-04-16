@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package com.example.nccnestapp.adapters;
 
 import android.support.v7.widget.RecyclerView;
@@ -31,11 +29,14 @@ import com.example.nccnestapp.utilities.PantryGuest;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
-public class PantryGuestRecyclerAdapter extends RealmRecyclerViewAdapter<PantryGuest, PantryGuestRecyclerAdapter.MyViewHolder> {
+public class PantryGuestRecyclerAdapter extends
+        RealmRecyclerViewAdapter<PantryGuest, PantryGuestRecyclerAdapter.MyViewHolder> {
+
 
     public PantryGuestRecyclerAdapter(OrderedRealmCollection<PantryGuest> data) {
         super(data, true);
     }
+
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -44,22 +45,20 @@ public class PantryGuestRecyclerAdapter extends RealmRecyclerViewAdapter<PantryG
         return new MyViewHolder(itemView);
     }
 
+
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-//        position =  position % super.getItemCount();
         final PantryGuest g = getItem(position);
         holder.setItem(g);
     }
 
-//    @Override
-//    public int getItemCount() {
-//        return super.getItemCount() << 1;
-//    }
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MyViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
         TextView emailView, nameView;
         CheckBox checkBox;
         PantryGuest mGuest;
+
 
         MyViewHolder(View itemView) {
             super(itemView);
@@ -69,12 +68,15 @@ public class PantryGuestRecyclerAdapter extends RealmRecyclerViewAdapter<PantryG
             checkBox.setOnClickListener(this);
         }
 
+
         void setItem(PantryGuest guest){
             this.mGuest = guest;
             this.emailView.setText(guest.getEmail());
-            this.nameView.setText(String.format("%s, %s", guest.getLast(), guest.getFirst()));
+            this.nameView.setText(
+                    String.format("%s, %s", guest.getLast(), guest.getFirst()));
             this.checkBox.setChecked(false);
         }
+
 
         @Override
         public void onClick(View v) {

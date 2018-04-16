@@ -15,9 +15,13 @@
  */
 package com.example.nccnestapp.utilities;
 
+import java.util.Locale;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
+
+import static java.lang.String.format;
 
 
 /**
@@ -41,7 +45,7 @@ public class PantryGuest extends RealmObject{
 
 
     /** Initializes an empty {@link PantryGuest} **/
-    public PantryGuest(){super();}
+    public PantryGuest(){ super(); }
 
 
     /**
@@ -56,37 +60,64 @@ public class PantryGuest extends RealmObject{
     }
 
     /** Setters **/
-    public PantryGuest setFirstName(Object first) {this.first = (String)first; return this;}
-    public PantryGuest setLastName(Object last) {this.last = (String)last; return this;}
-    public PantryGuest setEmail(Object email) {this.email = (String)email; return this;}
-    public PantryGuest setPin(Object pin) {this.pin = Integer.parseInt((String)pin); return this;}
-    public PantryGuest setPhone(Object phone) {this.phone = (String)phone; return this;}
-    public PantryGuest setSchoolID(Object nccID) {this.nccID = (String)nccID; return this;}
-    public PantryGuest setStreet(Object street) {this.street = (String)street; return this;}
-    public PantryGuest setCity(Object city) {this.city = (String)city; return this;}
-    public PantryGuest setState(Object state) {this.state = (String)state; return this;}
-    public PantryGuest setZip(Object zip) {this.zip = Integer.parseInt((String)zip); return this;}
-    public PantryGuest setGender(Object gender) {this.gender = (String)gender; return this;}
-    public PantryGuest setAge(Object age) {this.age = (String)age; return this;}
-    public PantryGuest setStatusEmploy(Object statusEmploy) {this.statusEmploy = (String)statusEmploy; return this;}
-    public PantryGuest setStatusHealth(Object statusHealth) {this.statusHealth = (String)statusHealth; return this;}
-    public PantryGuest setStatusHousing(Object statusHousing) {this.statusHousing = (String)statusHousing; return this;}
-    public PantryGuest setStatusChild(Object statusChild) {this.statusChild = (String)statusChild; return this;}
-    public PantryGuest setDietNeeds(Object dietNeeds) {this.dietNeeds = (String)dietNeeds; return this;}
-    public PantryGuest setFoundFrom(Object foundFrom) {this.foundFrom = (String)foundFrom; return this;}
-    public PantryGuest setComments(Object comments) {this.comments = (String)comments; return this;}
-    public PantryGuest setHelpedBy(Object helpedBy) {this.helpedBy = (String)helpedBy; return this;}
+    public PantryGuest setFirstName(Object first) {
+        this.first = (String)first; return this; }
+    public PantryGuest setLastName(Object last) {
+        this.last = (String)last; return this; }
+    public PantryGuest setEmail(Object email) {
+        this.email = (String)email; return this; }
+    public PantryGuest setPin(Object pin) {
+        this.pin = Integer.parseInt((String)pin); return this; }
+    public PantryGuest setPhone(Object phone) {
+        this.phone = (String)phone; return this; }
+    public PantryGuest setSchoolID(Object nccID) {
+        this.nccID = (String)nccID; return this; }
+    public PantryGuest setStreet(Object street) {
+        this.street = (String)street; return this; }
+    public PantryGuest setCity(Object city) {
+        this.city = (String)city; return this; }
+    public PantryGuest setState(Object state) {
+        this.state = (String)state; return this; }
+    public PantryGuest setZip(Object zip) {
+        this.zip = zip != null ? Integer.parseInt((String)zip) : 0; return this; }
+    public PantryGuest setGender(Object gender) {
+        this.gender = (String)gender; return this; }
+    public PantryGuest setAge(Object age) {
+        this.age = (String)age; return this; }
+    public PantryGuest setStatusEmploy(Object statusEmploy) {
+        this.statusEmploy = (String)statusEmploy; return this; }
+    public PantryGuest setStatusHealth(Object statusHealth) {
+        this.statusHealth = (String)statusHealth; return this; }
+    public PantryGuest setStatusHousing(Object statusHousing) {
+        this.statusHousing = (String)statusHousing; return this; }
+    public PantryGuest setStatusChild(Object statusChild) {
+        this.statusChild = (String)statusChild; return this; }
+    public PantryGuest setDietNeeds(Object dietNeeds) {
+        this.dietNeeds = (String)dietNeeds; return this; }
+    public PantryGuest setFoundFrom(Object foundFrom) {
+        this.foundFrom = (String)foundFrom; return this; }
+    public PantryGuest setComments(Object comments) {
+        this.comments = (String)comments; return this; }
+    public PantryGuest setHelpedBy(Object helpedBy) {
+        this.helpedBy = (String)helpedBy; return this; }
 
     /** Household Setters **/
     public PantryGuest setHouseholdSize(Object householdSize) {
-        this.householdSize = Integer.parseInt((String)householdSize);  return this;}
-    public PantryGuest setIncome(Object income) {this.income = Integer.parseInt((String)income); return this;}
-    public PantryGuest setChildUnder1(Object childUnder1) {this.childUnder1 = Integer.parseInt((String)childUnder1);  return this;}
-    public PantryGuest setChild1to5(Object child1to5) {this.child1to5 = Integer.parseInt((String)child1to5); return this;}
-    public PantryGuest setChild6to12(Object child6to12) {this.child6to12 = Integer.parseInt((String)child6to12); return this;}
-    public PantryGuest setChild13to18(Object child13to18) {this.child13to18 = Integer.parseInt((String)child13to18); return this;}
-    public PantryGuest setFoodStamps(Object foodStamps) {this.foodStamps = (String)foodStamps; return this;}
-    public PantryGuest setFoodPrograms(Object foodPrograms) {this.foodPrograms = (String)foodPrograms; return this;}
+        this.householdSize = Integer.parseInt((String)householdSize);  return this; }
+    public PantryGuest setIncome(Object income) {
+        this.income = Integer.parseInt((String)income); return this; }
+    public PantryGuest setChildUnder1(Object childUnder1) {
+        this.childUnder1 = Integer.parseInt((String)childUnder1);  return this; }
+    public PantryGuest setChild1to5(Object child1to5) {
+        this.child1to5 = Integer.parseInt((String)child1to5); return this; }
+    public PantryGuest setChild6to12(Object child6to12) {
+        this.child6to12 = Integer.parseInt((String)child6to12); return this; }
+    public PantryGuest setChild13to18(Object child13to18) {
+        this.child13to18 = Integer.parseInt((String)child13to18); return this; }
+    public PantryGuest setFoodStamps(Object foodStamps) {
+        this.foodStamps = (String)foodStamps; return this; }
+    public PantryGuest setFoodPrograms(Object foodPrograms) {
+        this.foodPrograms = (String)foodPrograms; return this; }
 
     /** Getters **/
     public String getFirst() {return first;}
@@ -121,15 +152,18 @@ public class PantryGuest extends RealmObject{
 
 
     /** Verify pin input **/
-    public boolean checkPin(int input) {return pin == String.valueOf(input).hashCode();}
+    public boolean checkPin(int input) {
+        return pin == String.valueOf(input).hashCode();
+    }
 
 
     @Override
     public String toString(){
-        return String.format("%20s  %13s, %-12s", String.format("[%s]", email), last, first);
+        return format("%20s  %13s, %-12s",
+                format("[%s]", email), last, first);
     }
 
     public String getAddress() {
-        return String.format("%s%n%s, %s  %d", street, city, state, zip);
+        return format(Locale.US, "%s%n%s, %s  %d", street, city, state, zip);
     }
 }
