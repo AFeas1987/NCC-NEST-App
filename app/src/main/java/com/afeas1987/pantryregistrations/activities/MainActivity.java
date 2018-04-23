@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.activities;
+package com.afeas1987.pantryregistrations.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,9 +26,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.adapters.PantryGuestRecyclerAdapter;
-import com.example.nccnestapp.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.adapters.PantryGuestRecyclerAdapter;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
 
 import io.realm.RealmResults;
 

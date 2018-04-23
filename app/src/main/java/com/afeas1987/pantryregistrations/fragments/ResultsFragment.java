@@ -1,4 +1,4 @@
-package com.example.nccnestapp.fragments;
+package com.afeas1987.pantryregistrations.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,16 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.activities.QuestionActivity;
-import com.example.nccnestapp.adapters.SimpleListAdapter;
-import com.example.nccnestapp.utilities.PantryGuest;
-import com.example.nccnestapp.utilities.SimpleListElement;
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.activities.QuestionActivity;
+import com.afeas1987.pantryregistrations.adapters.SimpleListAdapter;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.utilities.SimpleListElement;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.example.nccnestapp.utilities.Constants.QUESTIONS;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QUESTIONS;
+
 
 public class ResultsFragment extends Fragment {
 

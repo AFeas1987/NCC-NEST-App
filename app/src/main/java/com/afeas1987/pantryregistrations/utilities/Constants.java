@@ -14,25 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.utilities;
+package com.afeas1987.pantryregistrations.utilities;
 
 public class Constants {
-//    //  For collectTester
-//    public static final String FORMS_URI = "content://org.odk.collect.android.provider.odk.forms/forms";
-//    public static final String INSTANCES_URI = "content://org.odk.collect.android.provider.odk.instances/instances";
-//    public static final String DISPLAY_NAME = "displayName";
-//    public static final String DISPLAY_SUBTEXT = "displaySubtext";
-//    public static final String COLLECT_PACKAGE_NAME = "org.odk.collect.android";
-//    //  For SheetsActivity
-//    public static final int REQUEST_ACCOUNT_PICKER = 1000;
-//    public static final int REQUEST_AUTHORIZATION = 1001;
-//    public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-//    public static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
-//    public static final String PREF_ACCOUNT_NAME = "accountName";
-//    public static final String GOOGLE_APP_NAME = "NCC NEST Registrations";
-//    public static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
-//    public static final String SHEET_ID = "1u2t-wl4h70he3nKCfsrycyNgW_uSHhbT2BgNNDQrBGA";
-//    public static final String SHEET_RANGE = "Guest";
     //  For Realm
     private static final String INSTANCE_ADDRESS = "nest-registrations.us1a.cloud.realm.io";
     public static final String AUTH_URL = "https://" + INSTANCE_ADDRESS + "/auth";
@@ -43,7 +27,7 @@ public class Constants {
     public final static class Constraint
         {public final static int PHONE_NUMBER = 0, NCC_ID = 1, RANGE = 2;}
     //  Questions
-    public static final SurveyQuestion[] QUESTIONS = {
+    public static final com.afeas1987.pantryregistrations.utilities.SurveyQuestion[] QUESTIONS = {
             new SurveyQuestion(QuestionType.TEXT, true, "Last Name", "Enter your last name"),
             new SurveyQuestion(QuestionType.TEXT, true, "First Name", "Enter your first name"),
             new SurveyQuestion(QuestionType.TEXT, true, "Phone Number", "Enter your phone number", Constraint.PHONE_NUMBER),

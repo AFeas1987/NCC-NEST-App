@@ -1,4 +1,4 @@
-package com.example.nccnestapp.fragments;
+package com.afeas1987.pantryregistrations.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,24 +21,25 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.activities.QuestionActivity;
-import com.example.nccnestapp.utilities.PantryGuest;
-import com.example.nccnestapp.utilities.SurveyQuestion;
+
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.activities.QuestionActivity;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.utilities.SurveyQuestion;
 
 import java.util.BitSet;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_CLASS_PHONE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.example.nccnestapp.utilities.Constants.Constraint.NCC_ID;
-import static com.example.nccnestapp.utilities.Constants.Constraint.PHONE_NUMBER;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.ADDRESS;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.NUMBER_ENTRY;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.SELECT_MULTI;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.SELECT_NUMBER;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.SELECT_ONE;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.TEXT;
+import static com.afeas1987.pantryregistrations.utilities.Constants.Constraint.NCC_ID;
+import static com.afeas1987.pantryregistrations.utilities.Constants.Constraint.PHONE_NUMBER;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.ADDRESS;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.NUMBER_ENTRY;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.SELECT_MULTI;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.SELECT_NUMBER;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.SELECT_ONE;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.TEXT;
 
 public class QuestionFragment extends Fragment {
 

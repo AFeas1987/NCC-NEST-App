@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.activities;
+package com.afeas1987.pantryregistrations.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,8 +25,8 @@ import io.realm.SyncConfiguration;
 import io.realm.SyncCredentials;
 import io.realm.SyncUser;
 
-import static com.example.nccnestapp.utilities.Constants.AUTH_URL;
-import static com.example.nccnestapp.utilities.Constants.REALM_BASE_URL;
+import static com.afeas1987.pantryregistrations.utilities.Constants.AUTH_URL;
+import static com.afeas1987.pantryregistrations.utilities.Constants.REALM_BASE_URL;
 
 
 public abstract class AbstractActivity extends AppCompatActivity {

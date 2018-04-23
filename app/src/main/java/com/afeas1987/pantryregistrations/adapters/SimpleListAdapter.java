@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.example.nccnestapp.adapters;
+package com.afeas1987.pantryregistrations.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,8 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.utilities.SimpleListElement;
+
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.utilities.SimpleListElement;
 
 import java.util.List;
 

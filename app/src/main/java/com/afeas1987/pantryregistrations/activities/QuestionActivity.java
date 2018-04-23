@@ -1,4 +1,4 @@
-package com.example.nccnestapp.activities;
+package com.afeas1987.pantryregistrations.activities;
 /*
  * Copyright 2018 AFeas1987
  *
@@ -22,17 +22,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.fragments.QuestionFragment;
-import com.example.nccnestapp.fragments.ResultsFragment;
-import com.example.nccnestapp.fragments.ValidationFragment;
-import com.example.nccnestapp.utilities.PantryGuest;
-import com.example.nccnestapp.utilities.SurveyQuestion;
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.fragments.QuestionFragment;
+import com.afeas1987.pantryregistrations.fragments.ResultsFragment;
+import com.afeas1987.pantryregistrations.fragments.ValidationFragment;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.utilities.SurveyQuestion;
 
 import java.util.Arrays;
 import java.util.BitSet;
 
-import static com.example.nccnestapp.utilities.Constants.QUESTIONS;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QUESTIONS;
 
 public class QuestionActivity extends AbstractActivity {
 
@@ -48,7 +48,6 @@ public class QuestionActivity extends AbstractActivity {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .add(R.id.frame_layout_main, new ValidationFragment()).commit();
-//        Toast.makeText(getApplicationContext(), "Back stack " + getFragmentManager().getBackStackEntryCount(), Toast.LENGTH_LONG).show();
     }
 
 

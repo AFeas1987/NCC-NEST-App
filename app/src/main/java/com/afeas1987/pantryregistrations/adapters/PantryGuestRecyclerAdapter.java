@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-
-package com.example.nccnestapp.adapters;
+package com.afeas1987.pantryregistrations.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,8 +24,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.utilities.PantryGuest;
+
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;

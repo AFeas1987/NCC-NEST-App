@@ -1,4 +1,4 @@
-package com.example.nccnestapp.fragments;
+package com.afeas1987.pantryregistrations.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,10 +13,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.activities.AbstractActivity;
-import com.example.nccnestapp.activities.QuestionActivity;
-import com.example.nccnestapp.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.activities.AbstractActivity;
+import com.afeas1987.pantryregistrations.activities.QuestionActivity;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
 
 import io.realm.Case;
 import io.realm.RealmResults;

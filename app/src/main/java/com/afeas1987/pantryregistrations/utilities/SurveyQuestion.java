@@ -1,4 +1,4 @@
-package com.example.nccnestapp.utilities;
+package com.afeas1987.pantryregistrations.utilities;
 
 public class SurveyQuestion {
     public String title, prompt, hint;
