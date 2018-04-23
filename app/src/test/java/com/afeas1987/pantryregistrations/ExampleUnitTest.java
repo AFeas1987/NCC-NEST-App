@@ -1,4 +1,4 @@
-package com.example.nccnestapp;
+package com.afeas1987.pantryregistrations;
 
 import org.junit.Test;
 

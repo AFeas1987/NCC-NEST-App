@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.utilities;
+package com.afeas1987.pantryregistrations.utilities;
 
 public class SurveyQuestion {
     public String title, prompt, hint;

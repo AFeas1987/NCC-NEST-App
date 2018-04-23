@@ -19,7 +19,7 @@ limitations under the License.
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context="com.example.nccnestapp.activities.QuestionActivity">
+    tools:context="com.afeas1987.pantryregistrations.activities.SurveyActivity">
 
 
     <android.support.v7.widget.Toolbar

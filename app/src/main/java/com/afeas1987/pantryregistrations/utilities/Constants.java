@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.utilities;
+package com.afeas1987.pantryregistrations.utilities;
 
-public class Constants {
+public final class Constants {
     //  For Realm
     private static final String INSTANCE_ADDRESS = "nest-registrations.us1a.cloud.realm.io";
     public static final String AUTH_URL = "https://" + INSTANCE_ADDRESS + "/auth";
     public static final String REALM_BASE_URL = "realms://" + INSTANCE_ADDRESS;
     //  SurveyQuestion support codes
+    public final static class SurveyType
+        {public final static int GUEST = 0, VOLUNTEER = 1;}
     public final static class QuestionType
         {public final static int TEXT = 0, NUMBER_ENTRY = 1, SELECT_NUMBER = 2, SELECT_ONE = 3, SELECT_MULTI = 4, ADDRESS = 5;}
     public final static class Constraint
         {public final static int PHONE_NUMBER = 0, NCC_ID = 1, RANGE = 2;}
-    //  Questions
-    public static final SurveyQuestion[] QUESTIONS = {
+    //  Guest Survey
+    public static final SurveyQuestion[] GUEST_QUESTIONS = {
             null,
             null,
             new SurveyQuestion(QuestionType.TEXT, true, "Last Name", "Enter your last name"),
@@ -74,5 +76,15 @@ public class Constants {
                     .setOptions(new String[]{"Professor/campus staff", "Friend", "Website", "Facebook", "Twitter", "Instagram", "Internet Search", "Other"}),
             new SurveyQuestion(QuestionType.TEXT, false, "Comments", "Is there anything you would like us to know at this time?"),
             new SurveyQuestion(QuestionType.TEXT, true, "Volunteer", "What is the name of the Volunteer who helped you today?")
+    };
+    // Volunteer Survey
+    public static final SurveyQuestion[] VOLUNTEER_QUESTIONS = {
+            null,
+            null,
+            new SurveyQuestion(QuestionType.TEXT, true, "Last Name", "Enter your last name"),
+            new SurveyQuestion(QuestionType.TEXT, true, "First Name", "Enter your first name"),
+            new SurveyQuestion(QuestionType.TEXT, true, "Phone Number", "Enter your phone number", Constraint.PHONE_NUMBER),
+            new SurveyQuestion(QuestionType.ADDRESS, false, "Address", "Where are you located?"),
+            new SurveyQuestion(QuestionType.TEXT, false, "NCC ID", "Enter your NCC ID#", Constraint.NCC_ID)
     };
 }

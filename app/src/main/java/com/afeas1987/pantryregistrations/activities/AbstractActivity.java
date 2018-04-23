@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.activities;
+package com.afeas1987.pantryregistrations.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.nccnestapp.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.utilities.PantryVolunteer;
 
 import io.realm.ObjectServerError;
 import io.realm.Realm;
@@ -28,8 +29,8 @@ import io.realm.SyncConfiguration;
 import io.realm.SyncCredentials;
 import io.realm.SyncUser;
 
-import static com.example.nccnestapp.utilities.Constants.AUTH_URL;
-import static com.example.nccnestapp.utilities.Constants.REALM_BASE_URL;
+import static com.afeas1987.pantryregistrations.utilities.Constants.AUTH_URL;
+import static com.afeas1987.pantryregistrations.utilities.Constants.REALM_BASE_URL;
 
 
 public abstract class AbstractActivity extends AppCompatActivity {
@@ -39,11 +40,10 @@ public abstract class AbstractActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loginToRealm();
     }
 
 
-    private void loginToRealm() {
+    public void loginToRealmAsync(String realmPath) {
         SyncUser.logInAsync(
                 SyncCredentials.nickname("NESTAdmin", true), AUTH_URL,
                 new SyncUser.Callback<SyncUser>() {
@@ -51,13 +51,9 @@ public abstract class AbstractActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(@NonNull SyncUser result) {
                         SyncConfiguration configuration = new SyncConfiguration.Builder(
-                                SyncUser.current(), REALM_BASE_URL + "/guests").build();
+                                SyncUser.current(), REALM_BASE_URL + "/" + realmPath).build();
                         realm = Realm.getInstance(configuration);
-                        final RealmResults<PantryGuest> res =
-                                realm.where(PantryGuest.class).findAll();
-                        Realm.getInstance(SyncConfiguration.automatic())
-                                .executeTransaction(r -> r.copyToRealmOrUpdate(res));
-                        Realm.getInstance(SyncConfiguration.automatic()).close();
+                        updateOfflineRealm(realmPath);
                     }
 
                     @Override
@@ -66,5 +62,33 @@ public abstract class AbstractActivity extends AppCompatActivity {
                     }
 
                 });
+    }
+
+
+    private void updateOfflineRealm(String realmPath) {
+        switch (realmPath) {
+            case "guests":
+                final RealmResults<PantryGuest> guestRes =
+                        realm.where(PantryGuest.class).findAll();
+                Realm.getInstance(SyncConfiguration.automatic())
+                        .executeTransaction(r -> r.copyToRealmOrUpdate(guestRes));
+                break;
+            case "personnel":
+                final RealmResults<PantryVolunteer> volRes =
+                        realm.where(PantryVolunteer.class).findAll();
+                Realm.getInstance(SyncConfiguration.automatic())
+                        .executeTransaction(r -> r.copyToRealmOrUpdate(volRes));
+                break;
+        }
+        Realm.getInstance(SyncConfiguration.automatic()).close();
+    }
+
+
+    public void loginToRealm(String realmPath) {
+        SyncUser.logIn(SyncCredentials.nickname("NESTAdmin", true), AUTH_URL);
+        SyncConfiguration configuration = new SyncConfiguration.Builder(
+                SyncUser.current(), REALM_BASE_URL + "/" + realmPath).build();
+        realm = Realm.getInstance(configuration);
+        updateOfflineRealm(realmPath);
     }
 }

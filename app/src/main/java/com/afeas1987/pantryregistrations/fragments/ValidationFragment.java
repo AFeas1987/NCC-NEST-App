@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.fragments;
+package com.afeas1987.pantryregistrations.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,23 +28,31 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.activities.AbstractActivity;
-import com.example.nccnestapp.activities.QuestionActivity;
-import com.example.nccnestapp.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.activities.AbstractActivity;
+import com.afeas1987.pantryregistrations.activities.SurveyActivity;
+import com.afeas1987.pantryregistrations.utilities.Constants;
+import com.afeas1987.pantryregistrations.utilities.Constants.SurveyType;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.utilities.PantryVolunteer;
 
 import io.realm.Case;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 public class ValidationFragment extends Fragment {
 
+    private final class ValidationCode {
+        public static final int OK = 0, INVALID = 1, UNAVAILABLE = 2;
+    }
+
     EditText emailView;
-    AbstractActivity myActivity;
-    RealmResults<PantryGuest> mResults;
+    SurveyActivity myActivity;
     ProgressBar mProgress;
     ImageView mImage;
     Button launchButton;
     TextWatcher eListener;
+    private int vCode;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,33 +62,38 @@ public class ValidationFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        myActivity = (AbstractActivity) getActivity();
+        myActivity = (SurveyActivity) getActivity();
         emailView = myActivity.findViewById(R.id.edit_question_response);
         mProgress = myActivity.findViewById(R.id.progress_valid_email);
         mImage = myActivity.findViewById(R.id.img_valid_email);
         launchButton = myActivity.findViewById(R.id.btn_valid_launch);
-        launchButton.setOnClickListener(launchView -> {
-            ((QuestionActivity)myActivity).showPinDialog(emailView.getText().toString());
-//            onDestroyView();
-        });
+        launchButton.setOnClickListener(launchView ->
+            ((SurveyActivity)myActivity).showPinDialog(emailView.getText().toString()));
 
         emailView.addTextChangedListener(eListener = new TextWatcher() {
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 emailView = myActivity.findViewById(R.id.edit_question_response);
                 mImage.setVisibility(View.GONE);
                 mProgress.setVisibility(View.VISIBLE);
+                RealmResults<?> mResults;
                 if (myActivity.realm != null) {
-                    mResults = myActivity.realm.where(PantryGuest.class)
-                            .equalTo("email", emailView.getText().toString(), Case.INSENSITIVE).findAll();
+                    if (myActivity.surveyType == SurveyType.VOLUNTEER)
+                        mResults = myActivity.realm.where(PantryVolunteer.class)
+                                .equalTo("email", emailView.getText().toString(),
+                                        Case.INSENSITIVE).findAll();
+                    else
+                        mResults = myActivity.realm.where(PantryGuest.class)
+                                .equalTo("email", emailView.getText().toString(),
+                                        Case.INSENSITIVE).findAll();
                     mProgress.setVisibility(View.GONE);
                     if (!isValidEmail(emailView.getText()) || mResults.size() != 0) {
+                        vCode = mResults.size() == 0 ?
+                                ValidationCode.INVALID : ValidationCode.UNAVAILABLE;
                         mImage.setImageResource(android.R.drawable.ic_delete);
                         mImage.setVisibility(View.VISIBLE);
                         launchButton.setEnabled(false);
@@ -93,9 +106,7 @@ public class ValidationFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) { }
         });
     }
 

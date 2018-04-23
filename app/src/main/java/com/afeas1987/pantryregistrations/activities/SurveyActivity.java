@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.activities;
+package com.afeas1987.pantryregistrations.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,23 +22,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.fragments.QuestionFragment;
-import com.example.nccnestapp.fragments.ResultsFragment;
-import com.example.nccnestapp.fragments.ValidationFragment;
-import com.example.nccnestapp.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.fragments.QuestionFragment;
+import com.afeas1987.pantryregistrations.fragments.ResultsFragment;
+import com.afeas1987.pantryregistrations.fragments.ValidationFragment;
+import com.afeas1987.pantryregistrations.utilities.Constants.SurveyType;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.utilities.PantryVolunteer;
+import com.afeas1987.pantryregistrations.utilities.SurveyQuestion;
 
-import static com.example.nccnestapp.utilities.Constants.QUESTIONS;
+import static com.afeas1987.pantryregistrations.utilities.Constants.GUEST_QUESTIONS;
+import static com.afeas1987.pantryregistrations.utilities.Constants.VOLUNTEER_QUESTIONS;
 
 
+public class SurveyActivity extends AbstractActivity {
 
-public class QuestionActivity extends AbstractActivity {
-
-    public int q_number;
-    public final Object[] RESULTS = new Object[QUESTIONS.length];
+    public int q_number, surveyType;
+    public SurveyQuestion[] QUESTIONS;
+    public Object[] RESULTS;
     Fragment currentFrag;
 
 
@@ -46,6 +49,7 @@ public class QuestionActivity extends AbstractActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
+        initializeSurvey();
         if (savedInstanceState == null) {
             q_number = 1;
             getSupportFragmentManager().beginTransaction()
@@ -63,10 +67,21 @@ public class QuestionActivity extends AbstractActivity {
             currentFrag = getSupportFragmentManager()
                     .getFragment(savedInstanceState, tag);
         }
+    }
 
-
-        ((TextView)findViewById(R.id.txt_q_num)).setText(String.valueOf(q_number));
-
+    private void initializeSurvey() {
+        surveyType = getIntent().getIntExtra("SURVEY_TYPE", -1);
+        switch (surveyType) {
+            case SurveyType.GUEST:
+                QUESTIONS = GUEST_QUESTIONS;
+                loginToRealmAsync("guests");
+                break;
+            case SurveyType.VOLUNTEER:
+                QUESTIONS = VOLUNTEER_QUESTIONS;
+                loginToRealmAsync("personnel");
+                break;
+        }
+        RESULTS = new Object[QUESTIONS.length];
     }
 
 
@@ -115,7 +130,7 @@ public class QuestionActivity extends AbstractActivity {
             nextQuestionFragment();
         else {
             Bundle b = new Bundle();
-            b.putString("EMAIL", createGuest());
+            b.putString("EMAIL", surveyType == 0 ? createGuest() : createVolunteer());
             ResultsFragment fragment = new ResultsFragment();
             fragment.setArguments(b);
             getSupportFragmentManager().beginTransaction().addToBackStack(null)
@@ -125,8 +140,6 @@ public class QuestionActivity extends AbstractActivity {
                             currentFrag = fragment, "RESULTS_FRAG")
                     .commit();
         }
-
-        ((TextView)findViewById(R.id.txt_q_num)).setText(String.valueOf(q_number));
     }
 
 
@@ -147,8 +160,6 @@ public class QuestionActivity extends AbstractActivity {
         if (--q_number == 0)
             finish();
         else {
-
-            ((TextView)findViewById(R.id.txt_q_num)).setText(String.valueOf(q_number));
             getFragmentManager().beginTransaction().addToBackStack(null)
                     .commit();
             currentFrag = getSupportFragmentManager()
@@ -172,7 +183,7 @@ public class QuestionActivity extends AbstractActivity {
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setOnClickListener(alertView -> {
-                    if (QuestionActivity.this.isValidPin(pinEdit.getText())) {
+                    if (SurveyActivity.this.isValidPin(pinEdit.getText())) {
                         RESULTS[0] = email;
                         RESULTS[1] = String.valueOf(
                                 pinEdit.getText().toString().hashCode());
@@ -196,7 +207,7 @@ public class QuestionActivity extends AbstractActivity {
     }
 
 
-    public String createGuest() {
+    private String createGuest() {
         String[] address = (String[]) RESULTS[5];
         PantryGuest guest = new PantryGuest((String) RESULTS[0], (String) RESULTS[1]);
         guest.setLastName(RESULTS[2]).setFirstName(RESULTS[3])
@@ -215,5 +226,19 @@ public class QuestionActivity extends AbstractActivity {
                     .setState(address[2]).setZip(address[3]);
         this.realm.executeTransaction(realm -> realm.insert(guest));
         return guest.getEmail();
+    }
+
+
+    private String createVolunteer() {
+        String[] address = (String[]) RESULTS[5];
+        PantryVolunteer volunteer = new PantryVolunteer(
+                (String)RESULTS[0], (String)RESULTS[1], true);
+        volunteer   .setLastName(RESULTS[2]).setFirstName(RESULTS[3])
+                .setPhone(RESULTS[4]).setSchoolID(RESULTS[6]);
+        if (address != null)
+            volunteer.setStreet(address[0]).setCity(address[1])
+                    .setState(address[2]).setZip(address[3]);
+        this.realm.executeTransaction(realm -> realm.insert(volunteer));
+        return volunteer.getEmail();
     }
 }

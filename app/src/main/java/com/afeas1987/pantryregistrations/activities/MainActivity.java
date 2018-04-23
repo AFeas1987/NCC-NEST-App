@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.activities;
+package com.afeas1987.pantryregistrations.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,25 +26,37 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.adapters.PantryGuestRecyclerAdapter;
-import com.example.nccnestapp.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.adapters.PantryGuestRecyclerAdapter;
+import com.afeas1987.pantryregistrations.utilities.Constants;
+import com.afeas1987.pantryregistrations.utilities.Constants.SurveyType;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
 
 import io.realm.RealmResults;
 
 public class MainActivity extends AbstractActivity {
 
     private RecyclerView recView;
-    private Button mainBtn;
+    private Button mainBtnGuest, mainBtnVolunteer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
-        mainBtn = findViewById(R.id.btn_guest_main);
-        mainBtn.setOnClickListener(view -> startActivity(
-                new Intent(getApplicationContext(), QuestionActivity.class)));
+        loginToRealmAsync("guests");
+        mainBtnGuest = findViewById(R.id.btn_guest_main);
+        mainBtnGuest.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), SurveyActivity.class);
+            intent.putExtra("SURVEY_TYPE", SurveyType.GUEST);
+            startActivity(intent);
+        });
+        mainBtnVolunteer = findViewById(R.id.btn_volunteer_main);
+        mainBtnVolunteer.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), SurveyActivity.class);
+            intent.putExtra("SURVEY_TYPE", SurveyType.VOLUNTEER);
+            startActivity(intent);
+        });
     }
 
 
@@ -104,7 +116,8 @@ public class MainActivity extends AbstractActivity {
                 recView = findViewById(R.id.list_main);
                 TextView mainTxt = findViewById(R.id.txt_title_main);
                 int vis = recView.getVisibility();
-                mainBtn.setVisibility(vis);
+                mainBtnGuest.setVisibility(vis);
+                mainBtnVolunteer.setVisibility(vis);
                 if (vis == View.GONE) {
                     recView.setVisibility(View.VISIBLE);
                     mainTxt.setVisibility(View.VISIBLE);
@@ -122,4 +135,9 @@ public class MainActivity extends AbstractActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        realm.close();
+        super.onDestroy();
+    }
 }

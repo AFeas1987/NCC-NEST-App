@@ -15,7 +15,7 @@ limitations under the License.
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.nccnestapp.activities.MainActivity">
+    tools:context="com.afeas1987.pantryregistrations.activities.MainActivity">
     <!--
     <item
         android:id="@+id/action_settings"

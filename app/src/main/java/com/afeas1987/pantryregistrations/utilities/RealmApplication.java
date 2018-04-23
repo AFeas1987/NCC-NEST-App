@@ -1,6 +1,5 @@
 /*
- * Copyright 2017 Nafundi
- * Modifications 2018 AFeas1987
+ * Copyright 2018 AFeas1987
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.utilities;
+package com.afeas1987.pantryregistrations.utilities;
 
-public class SimpleListElement {
-    private String text1;
-    private String text2;
+import android.app.Application;
 
-    public SimpleListElement(String text1, String text2) {
-        this.text1 = text1;
-        this.text2 = text2;
+import io.realm.Realm;
+
+
+public class RealmApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Realm.init(this);
     }
 
-    public String getText1() {
-        return text1;
-    }
-
-    public String getText2() {
-        return text2;
-    }
 }

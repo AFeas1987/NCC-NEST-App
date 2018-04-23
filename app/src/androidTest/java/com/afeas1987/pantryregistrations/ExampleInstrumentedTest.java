@@ -1,4 +1,4 @@
-package com.example.nccnestapp;
+package com.afeas1987.pantryregistrations;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

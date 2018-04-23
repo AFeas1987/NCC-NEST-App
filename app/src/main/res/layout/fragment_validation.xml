@@ -19,7 +19,7 @@ limitations under the License.
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    tools:context=".activities.QuestionActivity">
+    tools:context=".activities.SurveyActivity">
 
     <!-- Login progress -->
 

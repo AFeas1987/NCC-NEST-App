@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.nccnestapp.fragments;
+package com.afeas1987.pantryregistrations.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -33,50 +32,45 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nccnestapp.R;
-import com.example.nccnestapp.activities.QuestionActivity;
-import com.example.nccnestapp.utilities.Constants;
-import com.example.nccnestapp.utilities.PantryGuest;
-import com.example.nccnestapp.utilities.SurveyQuestion;
+import com.afeas1987.pantryregistrations.R;
+import com.afeas1987.pantryregistrations.activities.SurveyActivity;
+import com.afeas1987.pantryregistrations.utilities.PantryGuest;
+import com.afeas1987.pantryregistrations.utilities.SurveyQuestion;
 
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.LinkedList;
-import java.util.List;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_CLASS_PHONE;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.example.nccnestapp.utilities.Constants.Constraint.NCC_ID;
-import static com.example.nccnestapp.utilities.Constants.Constraint.PHONE_NUMBER;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.ADDRESS;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.NUMBER_ENTRY;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.SELECT_MULTI;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.SELECT_NUMBER;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.SELECT_ONE;
-import static com.example.nccnestapp.utilities.Constants.QuestionType.TEXT;
+import static com.afeas1987.pantryregistrations.utilities.Constants.Constraint.NCC_ID;
+import static com.afeas1987.pantryregistrations.utilities.Constants.Constraint.PHONE_NUMBER;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.ADDRESS;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.NUMBER_ENTRY;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.SELECT_MULTI;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.SELECT_NUMBER;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.SELECT_ONE;
+import static com.afeas1987.pantryregistrations.utilities.Constants.QuestionType.TEXT;
 
 public class QuestionFragment extends Fragment {
 
     private SurveyQuestion question;
-    private QuestionActivity mActivity;
+    private SurveyActivity mActivity;
     private EditText mResponse;
     private RadioGroup group;
     private NumberPicker picker;
     private CheckBox[] checks;
-    private ScrollView scroll;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mActivity = (QuestionActivity) getActivity();
-        question = Constants.QUESTIONS[mActivity.q_number];
+        mActivity = (SurveyActivity) getActivity();
+        question = mActivity.QUESTIONS[mActivity.q_number];
         return inflater.inflate(getTypeLayout(), container, false);
     }
 

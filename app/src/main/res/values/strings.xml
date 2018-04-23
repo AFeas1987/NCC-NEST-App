@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <resources>
-    <string name="app_name">NCC Nest App</string>
+    <string name="app_name">Pantry Registrations</string>
     <string name="ok">OK</string>
     <string name="str_admin_menu">Admin</string>
     <string name="str_response_required">Sorry, this response is required</string>
